@@ -12,15 +12,17 @@
 
   <script>
   $(document).ready(function(){
-    $.ajax({
-      url:'http://gowatchit.com/api/v3/tracking/asset_serve',
-      type: 'POST',
-      data: {
-        season_id: 87, 
-        modality: 'api' ,
-        "X-api-key": $('#gwi-widget-config').data('api-key')
-      }
-    });
+  $.ajax({
+        url:'http://gowatchit.com/api/v3/tracking/asset_serve',
+        type: 'POST',
+        data: {
+          season_id: 87, 
+          modality: 'api' 
+        },
+        headers: {
+          "X-api-key": $('#gwi-widget-config').data('api-key');
+        }
+      });
 
     // $.post( 'http://gowatchit.com/api/v3/tracking/asset_serve', { season_id: 87, modality: 'api' } );
 
