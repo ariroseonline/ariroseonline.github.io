@@ -118,6 +118,18 @@
 	    .section {
 	      position:relative;
 	    }
+
+      .section:before,
+      .section:after {
+        content:"";
+        display:table;
+      }
+      .section:after {
+        clear:both;
+      }
+      .section {
+        zoom:1; /* For IE 6/7 (trigger hasLayout) */
+      }
 	    
 	    .section .box {
 	      background:black;
