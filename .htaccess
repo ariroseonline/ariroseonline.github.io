@@ -551,3 +551,7 @@ FileETag None
 # <IfModule mod_headers.c>
 #    Header set Connection Keep-Alive
 # </IfModule>
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !(?=jpg|png|gif|js|css|pdf|docx|htm)
+RewriteRule ^(.*)$ index.html
