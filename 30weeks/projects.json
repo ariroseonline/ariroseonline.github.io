@@ -103,29 +103,6 @@
 
 		{	
 			"id": 5,
-			"title": "Flatiron School: Branding", 
-			"description": "Fledgling coding bootcamp needed to make its mark. I worked as Campus Director in the inaugural cohort, handling admissions, events, employer outreach, marketing, social media — and yes, branding.",
-			"roles": ["Art Direction", "Creative"],
-			"technologies": [],
-			"images": [
-				{
-					"url": "projects/flatiron/1.png"
-				},
-				{
-					"url": "projects/flatiron/2.png"
-				},
-				{
-					"url": "projects/flatiron/3.png"					
-				},
-				{
-					"url": "projects/flatiron/4.png"					
-				}
-
-			]
-		},
-
-		{	
-			"id": 6,
 			"title": "Wetfeet: Grad Report", 
 			"description": "Wetfeet, owned by Universum, had exclusive survey data gathered from hundreds of thousands exiting college students around the world. This interactive report profiled the student and let him or her visualize their results.",
 			"roles": ["Front-End Developer", "Art Direction"],
@@ -148,7 +125,7 @@
 		},
 
 		{	
-			"id": 7,
+			"id": 6,
 			"title": "Wetfeet: Culture Fit Prototype", 
 			"description": "This prototype, subsequently released publicly to college graduates, asked the user a series of polling questions. It matched the prospective job seekers with employer cultures through a basic use of machine learning and a social graph API.",
 			"roles": ["Front-End Development", "Creative"],
@@ -165,21 +142,46 @@
 		},
 
 		{	
+			"id": 7,
+			"title": "Flatiron School: Branding", 
+			"description": "Fledgling coding bootcamp needed to make its mark. I worked as Campus Director in the inaugural cohort, handling admissions, events, employer outreach, marketing, social media — and yes, branding.",
+			"roles": ["Art Direction", "Creative"],
+			"technologies": [],
+			"images": [
+				{
+					"url": "projects/flatiron/1.png"
+				},
+				{
+					"url": "projects/flatiron/2.png"
+				},
+				{
+					"url": "projects/flatiron/3.png"					
+				},
+				{
+					"url": "projects/flatiron/4.png"					
+				}
+
+			]
+		},
+
+		
+
+		{	
 			"id": 8,
 			"title": "Breed Breakdown", 
-			"description": "An interactive tool to help the new dog owner find the perfect breed based on their ideal preferences.",
+			"description": "An interactive tool to help the new dog owner find the perfect breed based on their ideal preferences. It has received over 2 million unique visits without an ad spend.",
 			"roles": ["Front-End Developer", "Creative"],
 			"technologies": ["Javascript", "CSS", "HTML"],
 			"images": [
 				{
 					"url": "projects/breedbreakdown/1.png"
-				},
-				{
-					"url": "projects/breedbreakdown/2.jpg"
-				},
-				{
-					"url": "projects/breedbreakdown/3.gif"					
 				}
+				// {
+				// 	"url": "projects/breedbreakdown/2.jpg"
+				// },
+				// {
+				// 	"url": "projects/breedbreakdown/3.gif"					
+				// }
 
 			]
 		},
