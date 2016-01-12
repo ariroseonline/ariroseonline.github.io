@@ -5247,8 +5247,12 @@ section {
   text-align: center; }
   .by-line p {
     margin-bottom: 0;
-    font-size: 22px;
-    line-height: 50px; }
+    font-size: 18px;
+    line-height: 40px; }
+  @media (min-width: 768px) {
+    .by-line {
+      font-size: 22px;
+      line-height: 50px; } }
 
 .projects {
   margin-bottom: 40px; }

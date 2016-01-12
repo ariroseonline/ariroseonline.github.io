@@ -115,8 +115,14 @@ section {
 	text-align: center;
 	p {
 		margin-bottom: 0;
+		font-size: 18px;
+		line-height: 40px;
+
+	}
+
+	@media (min-width: $screen-sm-min) {
 		font-size: 22px;
-  	line-height: 50px;	
+  	line-height: 50px;
 	}
 }
 
