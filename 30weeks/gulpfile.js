@@ -29,7 +29,6 @@ gulp.task('js', function() {
 
 
 gulp.task('uglify', ['js'], function(){
-  console.log('yooooo')
   return gulp.src(['dist/app.js'])
       .pipe(rename('uglify.js'))
       .pipe(uglify())
@@ -51,7 +50,6 @@ gulp.task('templates', function () {
 	}
 	// console.log(templateData)
 	return gulp.src('templates/index.hbs')
-
 		.pipe(handlebars(templateData, options))
 		.pipe(rename('index.html'))
 		.pipe(gulp.dest('./'));
