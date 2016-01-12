@@ -5308,7 +5308,7 @@ p.project-title {
 .technology-slot, .role-slot {
   display: inline-block;
   margin: 5px 0 0 5px;
-  border-bottom: 1px solid #CDCDCD;
+  border-bottom: 1px solid #F2F2F2;
   line-height: 1; }
 
 .flickity-page-dots {
