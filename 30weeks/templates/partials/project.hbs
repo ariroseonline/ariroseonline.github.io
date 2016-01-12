@@ -1,0 +1,32 @@
+<li class="clearfix project hide" data-project-id={{id}}>
+	<div class="row">
+		<div class="col-sm-3">
+			<p class="project-title">{{title}}</p>
+			<p>{{description}}</p>
+			<p>
+				{{#if roles}}
+					Roles:
+					{{#each roles}}
+						<span class="role-slot">{{this}}</span>
+					{{/each}}
+				{{/if}}
+			<p>
+			<p>
+				{{#if technologies}}
+					Technologies:
+					{{#each technologies}}
+						<span class="technology-slot">{{this}}</span>
+					{{/each}}
+				{{/if}}
+			<p>
+		</div>
+
+		<div class="col-sm-9">
+			<div class="project-images">
+				{{#each images}}
+					<img src="{{url}}" />
+				{{/each}}
+			</div>
+		</div>
+	</div>
+</li>
