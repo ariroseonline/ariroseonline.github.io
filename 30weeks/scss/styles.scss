@@ -25,11 +25,13 @@ ul, ol {
 }
 
 p {
-  font-family: Didot;
-	font-size: 18px;
-  line-height: 44px;
+  font-family: "DidLight";
+  font-size: 18px;
+  line-height: 40px;
   font-weight: 100;
+  letter-spacing: .02em;
 }
+
 
 
 .intro {
@@ -144,17 +146,23 @@ section {
 }
 
 p.project-title {
-	font-weight: 900;
+	font-family: "DidBold";
   font-size: 16px;
 }
 
 .project-images {
-	
 	img {
 			max-width: 100%;
 			margin: 0 50px;
 			height:350px;
 	}
+}
+
+.technology-slot, .role-slot {
+  background: #F2F2F2;
+  padding: 0px 5px;
+  display: inline-block;
+  margin: 5px 5px 0px 0;
 }
 
 .flickity-page-dots {
