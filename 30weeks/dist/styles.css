@@ -5306,10 +5306,10 @@ p.project-title {
   max-height: 350px; }
 
 .technology-slot, .role-slot {
-  background: #F2F2F2;
-  padding: 0px 5px;
   display: inline-block;
-  margin: 5px 0 0 5px; }
+  margin: 5px 0 0 5px;
+  border-bottom: 1px solid #CDCDCD;
+  line-height: 1; }
 
 .flickity-page-dots {
   bottom: -50px; }
