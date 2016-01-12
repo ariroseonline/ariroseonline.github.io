@@ -5180,6 +5180,9 @@ http://flickity.metafizzy.co
   filter: alpha(opacity=100);
   opacity: 1; }
 
+@-ms-viewport {
+  width: device-width; }
+
 ul, ol {
   margin: 0;
   padding: 0;
@@ -5197,17 +5200,26 @@ p {
 
 .stripe {
   background: #111;
-  margin-top: 75px;
-  margin-bottom: 75px; }
+  margin-top: 40px;
+  margin-bottom: 40px; }
+  @media (min-width: 768px) {
+    .stripe {
+      margin-top: 75px;
+      margin-bottom: 75px; } }
 
 h1 {
-  font-size: 350px;
+  font-size: 125px;
+  line-height: .55;
+  margin-top: 10px;
   color: #ffffff;
   text-transform: uppercase;
   text-align: center;
-  margin-top: 20px;
-  margin-bottom: 0px;
-  line-height: .5; }
+  margin-bottom: 0px; }
+  @media (min-width: 768px) {
+    h1 {
+      line-height: .5;
+      margin-top: 20px;
+      font-size: 350px; } }
 
 section {
   padding: 0 0 30px; }
@@ -5240,12 +5252,18 @@ section {
 
 .projects {
   margin-bottom: 40px; }
+  @media (min-width: 768px) {
+    .projects {
+      margin-bottom: 0; } }
 
 .projects-nav {
   margin-bottom: 20px;
   text-align: center; }
   .projects-nav p {
     display: inline-block; }
+
+.project-metadata {
+  margin-bottom: 40px; }
 
 .project-link, .contact-methods li {
   margin-bottom: 15px;
@@ -5281,7 +5299,7 @@ p.project-title {
 .project-images img {
   max-width: 100%;
   margin: 0 50px;
-  height: 350px; }
+  max-height: 350px; }
 
 .technology-slot, .role-slot {
   background: #F2F2F2;
