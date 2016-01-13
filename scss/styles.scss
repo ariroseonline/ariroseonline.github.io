@@ -1,0 +1,221 @@
+@import "bootstrap"; 
+@import "fonts";
+
+// Modules and Variables
+@import "partials/base";
+
+// Partials
+@import "partials/header";
+@import "partials/footer";
+@import "partials/body";
+// @import "partials/typography";
+// @import "partials/buttons";
+// @import "partials/figures";
+
+// Third-party
+// @import "vendor/colorpicker";
+// @import "vendor/jquery.ui.core";
+
+@import "../node_modules/flickity/dist/flickity.min";
+
+
+@-ms-viewport{
+  width: device-width;
+}
+
+ul, ol {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+p {
+  font-family: "DidLight";
+  font-size: 18px;
+  line-height: 40px;
+  font-weight: 100;
+  letter-spacing: .02em;
+}
+
+
+
+
+.intro {
+	p {
+		  text-indent: 35px;
+	}
+}
+//
+.stripe {
+	background: #111;
+	margin-top: 40px;
+	margin-bottom: 40px;
+	@media (min-width: $screen-sm-min) {
+
+		margin-top: 75px;
+		margin-bottom: 75px;
+	}
+}	
+
+h1 {
+	font-size: 125px;
+	line-height: .55;
+	margin-top: 10px;
+
+	color: #ffffff;
+	text-transform: uppercase;
+	text-align: center;
+  margin-bottom: 0px;
+
+  @media (min-width: $screen-sm-min) {
+  		line-height: .5;
+  		margin-top: 20px;
+  	  font-size: 350px;
+  }
+
+
+
+}
+
+section {
+	padding: 0 0 30px;
+}
+
+
+
+.section-header {
+	position: relative;
+	text-align: center;
+	padding: 30px 0;
+	h2 {
+		text-transform: uppercase;
+		display: inline-block;
+		background: #ffffff;
+		padding: 0 15px;
+		margin: 0;
+	}
+
+	h2:before {
+
+			content: "";
+			position: absolute;
+			width: 100%;
+			border-bottom: 1px solid black;
+			left: 0;
+			top: 50%;
+			// top: 58%; //this looks good too
+			z-index: -1;
+
+		};
+
+}
+
+
+.by-line {
+	text-align: center;
+	p {
+		margin-bottom: 0;
+		font-size: 18px;
+		line-height: 40px;
+
+	}
+
+	@media (min-width: $screen-sm-min) {
+		font-size: 22px;
+  	line-height: 50px;
+	}
+}
+
+.projects {
+	margin-bottom: 40px;
+	@media (min-width: $screen-sm-min) {
+		margin-bottom: 0;
+	}
+
+}
+
+.projects-nav {
+	margin-bottom: 20px;
+	text-align: center;
+	p {
+		display: inline-block;
+	}
+}
+
+.project-metadata {
+	margin-bottom: 40px;
+}
+
+.project-link {
+	
+		margin-bottom: 15px;
+    margin-right: 15px;
+    display: inline-block;
+    font-size: 15px;
+    background: #F2F2F2;
+    padding: 5px 10px;
+    cursor: pointer;
+    color: black;
+    /* text-transform: uppercase; */
+    font-family: 'Didot';
+    transition: all .2s;
+    transform: skewX(-15deg);
+	&.is-selected {
+		border-bottom: 5px solid black;
+	}
+
+	&:hover {
+		background: darken(#F2F2F2, 10%);
+	}
+}
+
+.project {
+	width: 100%;
+	text-align: center;
+	list-style-type: none;
+	p {
+		font-size: 14px;
+		line-height: 23px;
+		text-align: left;
+	}
+}
+
+p.project-title {
+	font-family: "DidBold";
+  font-size: 16px;
+}
+
+.project-images {
+	img {
+			max-width: 100%;
+			margin: 0 50px;
+			max-height:350px;
+	}
+}
+
+.technology-slot, .role-slot {
+  display: inline-block;
+  margin: 5px 0 0 5px;
+  border-bottom: 1px solid #F2F2F2;
+  line-height: 1;
+}
+
+.flickity-page-dots {
+  bottom: -50px;
+  .dot {
+  	height: 12px;
+  	width: 12px;
+  }
+}
+
+.contact-methods {
+	text-align: center;
+ 	li {
+		@extend .project-link;
+    // padding: 5px 30px;
+	}	
+	a {
+		color: #000000;
+		text-decoration: none;
+	}
+}
