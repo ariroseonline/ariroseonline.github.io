@@ -5195,8 +5195,9 @@ p {
   font-weight: 100;
   letter-spacing: .02em; }
 
-strong {
-  font-family: "DidBold"; }
+b, strong {
+  font-family: "DidBold";
+  font-weight: normal; }
 
 .intro p {
   text-indent: 35px; }
