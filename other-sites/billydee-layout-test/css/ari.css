@@ -1,0 +1,138 @@
+
+.container {
+	padding:0px;
+}
+h1 {
+	text-align: center;
+	color:white;
+}
+h2 {
+	text-indent: 10px;
+}
+
+.tile {
+	float:left;
+	height:150px;
+	color:white;
+	text-align: center;
+	padding:50px 20px 0;
+	margin:0px;
+	width: 50%;
+	cursor:pointer;
+}
+
+.tile:hover, .drawer:hover {
+	opacity: .8;
+}
+
+.genre {
+	padding:10px 10px;
+}
+
+ul {
+	list-style-type:none;
+	clear:both;
+}
+
+
+.tile:nth-of-type(3n+1) {
+	background:#333;
+}
+
+.tile:nth-of-type(3n+2) {
+	background:#666;
+}
+.tile:nth-of-type(3n+3) {
+	background:#999;
+}
+
+.genre:nth-of-type(even) {
+	background:#aaa;
+}
+
+.genre:nth-of-type(odd) {
+	background:#eee;
+}
+
+/*mobile portrait */
+.container {
+	background:yellow;
+}
+
+.drawer {
+	width:100%;
+	height:150px;
+	float:left;
+	background: orange;
+	cursor:pointer;
+}
+
+.drawer p {
+	text-align: center;
+	padding:20px;
+	color:white;
+	font-size:20px;
+	text-shadow:2px 2px 5px black;
+}
+
+
+/* 3 movies */
+
+@media only screen and (min-width: 36.85em) {
+	.container {
+		background:orange;
+	}
+
+	.tile {
+		width:33.3333%;
+	}
+}
+
+
+/*4 movies */
+
+@media only screen and (min-width: 48.6875em) {
+	.container {
+		background:purple;
+	}
+
+	.tile {
+		width:25%;
+	}
+}
+
+/* 5 movies */
+
+@media only screen and (min-width: 60.5em) {
+	.container {
+/*		background:green;
+*/	}
+	.tile {
+		width:20%;
+	}
+}
+
+
+/*6 movies */
+
+@media only screen and (min-width: 72.375em) {
+	.container {
+		background:red;
+	}
+
+	.tile {
+		width:16.6666667%;
+	}
+}
+
+/*7 movies */
+
+@media only screen and (min-width: 84.25em) {
+	.container {
+		background:blue;
+	}
+
+	.tile {
+		width:14.28571428571429%;
+	}
+}
