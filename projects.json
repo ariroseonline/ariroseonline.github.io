@@ -77,7 +77,7 @@
 		{	
 			"id": 4,
 			"title": "Wetfeet: Grad Report", 
-			"description": "Wetfeet, owned by Universum, had exclusive survey data gathered from hundreds of thousands exiting college students around the world. This interactive report profiled the student and let him or her visualize their results.",
+			"description": "Wetfeet, owned by Universum, had exclusive survey data gathered from hundreds of thousands of exiting college students around the world. This interactive report profiled the student and let him or her visualize their results.",
 			"roles": ["Front-End Developer", "Art Direction"],
 			"technologies": ["Javascript", "Angular.js", "SCSS", "HTML", "Wireframing"],
 			"images": [
