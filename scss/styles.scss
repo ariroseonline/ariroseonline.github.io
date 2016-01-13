@@ -201,10 +201,17 @@ p.project-title {
 }
 
 .flickity-page-dots {
-  bottom: -50px;
+  bottom: -40px;
   .dot {
   	height: 12px;
   	width: 12px;
+  }
+}
+
+//just on desktop, leaves room for flickity dots
+.container.samples {
+  @media (min-width: $screen-sm-min) {
+    padding-bottom: 50px;
   }
 }
 

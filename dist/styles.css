@@ -5312,10 +5312,14 @@ p.project-title {
   line-height: 1; }
 
 .flickity-page-dots {
-  bottom: -50px; }
+  bottom: -40px; }
   .flickity-page-dots .dot {
     height: 12px;
     width: 12px; }
+
+@media (min-width: 768px) {
+  .container.samples {
+    padding-bottom: 50px; } }
 
 .contact-methods {
   text-align: center; }
