@@ -209,7 +209,7 @@ p.project-title {
 }
 
 //just on desktop, leaves room for flickity dots
-.container.samples {
+section.container.samples {
   @media (min-width: $screen-sm-min) {
     padding-bottom: 50px;
   }

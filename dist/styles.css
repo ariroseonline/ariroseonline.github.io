@@ -5318,7 +5318,7 @@ p.project-title {
     width: 12px; }
 
 @media (min-width: 768px) {
-  .container.samples {
+  section.container.samples {
     padding-bottom: 50px; } }
 
 .contact-methods {
