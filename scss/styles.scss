@@ -125,8 +125,10 @@ section {
 	}
 
 	@media (min-width: $screen-sm-min) {
-		font-size: 22px;
-  	line-height: 50px;
+    p {
+  		font-size: 22px;
+    	line-height: 50px;
+    }
 	}
 }
 

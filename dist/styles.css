@@ -5254,7 +5254,7 @@ section {
     font-size: 18px;
     line-height: 40px; }
   @media (min-width: 768px) {
-    .by-line {
+    .by-line p {
       font-size: 22px;
       line-height: 50px; } }
 
