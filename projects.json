@@ -4,7 +4,7 @@
 		{	
 			"id": 1,
 			"title": "GoWatchIt: Superwidget", 
-			"description":"A pioneering API-backed embeddable SDK and theming engine for film releases, TV programming, and advertising campaigns. Served millions of times a month across the web from major studio properties (Universal, Sony, Paramount, FOX) to large content sites (NYTimes, Buzzfeed, Entertainment Weekly).",
+			"description":"An API-backed embeddable SDK and theming engine for film releases, TV airdates, and advertising campaigns. Served millions of times a month across the web from major studio properties (Universal, Sony, Paramount, FOX) to large content sites (NYTimes, Buzzfeed, Entertainment Weekly).",
 			"roles": ["Front-End Development", "Art Direction", "Design", "Project Management"],
 			"technologies": ["Javascript", "Ember.js", "SCSS", "Rails", "Handlebars"],
 			"images": [
