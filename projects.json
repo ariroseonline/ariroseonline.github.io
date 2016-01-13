@@ -35,7 +35,7 @@
 		{	
 			"id": 2,
 			"title": "GoWatchIt: Consumer Site", 
-			"description": "Fully responsive consumer web application  Redesign of existing outdated website through managing stakeholders, freelancers, and team members ",
+			"description": "Fully responsive consumer web application. Redesigned existing outdated website through managing stakeholders, freelancers, and team members.",
 			"roles": ["Front-End Development", "Art Direction", "Project Management"],
 		  "technologies": ["Javascript", "Ember.js", "SCSS", "Rails", "Handlebars"],
 			"images": [
