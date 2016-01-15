@@ -224,10 +224,11 @@ section.container.samples {
 .contact-methods {
 	text-align: center;
  	li {
-		@extend .project-link;
     // padding: 5px 30px;
 	}	
 	a {
+    @extend .project-link;
+
 		color: #000000;
 		text-decoration: none;
 	}

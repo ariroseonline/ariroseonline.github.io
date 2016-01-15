@@ -5273,7 +5273,7 @@ section {
 .project-metadata {
   margin-bottom: 40px; }
 
-.project-link, .contact-methods li {
+.project-link, .contact-methods a {
   margin-bottom: 15px;
   margin-right: 15px;
   display: inline-block;
@@ -5286,9 +5286,9 @@ section {
   font-family: 'Didot';
   transition: all .2s;
   transform: skewX(-15deg); }
-  .project-link.is-selected, .contact-methods li.is-selected {
+  .project-link.is-selected, .contact-methods a.is-selected {
     border-bottom: 5px solid black; }
-  .project-link:hover, .contact-methods li:hover {
+  .project-link:hover, .contact-methods a:hover {
     background: #d9d9d9; }
 
 .project {
