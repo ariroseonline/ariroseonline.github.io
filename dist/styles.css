@@ -5200,7 +5200,7 @@ b, strong {
   font-weight: normal; }
 
 .intro p {
-  text-indent: 35px; }
+  margin-bottom: 30px; }
 
 .stripe {
   background: #111;
