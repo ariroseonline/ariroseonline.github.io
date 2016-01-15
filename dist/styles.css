@@ -5327,6 +5327,8 @@ p.project-title {
 
 .contact-methods {
   text-align: center; }
+  .contact-methods li {
+    display: inline-block; }
   .contact-methods a {
     color: #000000;
     text-decoration: none; }

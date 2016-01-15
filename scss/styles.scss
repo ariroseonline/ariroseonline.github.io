@@ -224,7 +224,7 @@ section.container.samples {
 .contact-methods {
 	text-align: center;
  	li {
-    // padding: 5px 30px;
+    display: inline-block;
 	}	
 	a {
     @extend .project-link;
