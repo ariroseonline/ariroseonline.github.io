@@ -5316,10 +5316,12 @@ p.project-title {
   line-height: 1; }
 
 .flickity-page-dots {
-  bottom: -40px; }
+  bottom: -40px;
+  position: relative; }
   .flickity-page-dots .dot {
     height: 12px;
-    width: 12px; }
+    width: 12px;
+    margin-bottom: 10px; }
 
 @media (min-width: 768px) {
   section.container.samples {

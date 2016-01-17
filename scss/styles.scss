@@ -208,9 +208,11 @@ p.project-title {
 
 .flickity-page-dots {
   bottom: -40px;
+  position: relative;
   .dot {
   	height: 12px;
   	width: 12px;
+  	margin-bottom: 10px;
   }
 }
 
