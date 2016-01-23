@@ -5189,15 +5189,15 @@ ul, ol {
   list-style-type: none; }
 
 p {
-  font-family: "DidLight";
+  font-family: 'Titillium Web', sans-serif;
   font-size: 18px;
   line-height: 40px;
-  font-weight: 100;
+  font-weight: 300;
   letter-spacing: .02em; }
 
 b, strong {
-  font-family: "DidBold";
-  font-weight: normal; }
+  font-family: 'Titillium Web', sans-serif;
+  font-weight: 700; }
 
 .intro p {
   margin-bottom: 30px; }
@@ -5283,7 +5283,7 @@ section {
   cursor: pointer;
   color: black;
   /* text-transform: uppercase; */
-  font-family: 'Didot';
+  font-family: 'Titillium Web', sans-serif;
   transition: all .2s;
   transform: skewX(-15deg); }
   .project-link.is-selected, .contact-methods a.is-selected {
@@ -5301,7 +5301,8 @@ section {
     text-align: left; }
 
 p.project-title {
-  font-family: "DidBold";
+  font-family: 'Titillium Web', sans-serif;
+  font-weight: 700;
   font-size: 16px; }
 
 .project-images img {
@@ -5312,8 +5313,9 @@ p.project-title {
 .technology-slot, .role-slot {
   display: inline-block;
   margin: 5px 0 0 5px;
-  border-bottom: 1px solid #F2F2F2;
-  line-height: 1; }
+  border-bottom: 1px dotted #A1A1A1;
+  line-height: 1;
+  padding-bottom: 2px; }
 
 .flickity-page-dots {
   bottom: -40px;
