@@ -51,7 +51,7 @@ var lazyLoadImages = function(projectId) {
 			
 			//load in images lazily
 			lazyLoadImages(projectId);
-			// lazyLoadImages(projectId + 1); //the next project, foreseeing their next click :)
+			lazyLoadImages(projectId + 1); //the next project, foreseeing their next click :)
 			
 			//initiate flickity on it
 			$project.find('.project-images').flickity({
