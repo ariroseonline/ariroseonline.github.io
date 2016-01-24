@@ -144,6 +144,10 @@ section {
 
 .projects-nav {
 	margin-bottom: 20px;
+	@media (min-width: $screen-sm-min) {
+		margin-bottom: 50px;
+	}
+
 	text-align: center;
 	p {
 		display: inline-block;

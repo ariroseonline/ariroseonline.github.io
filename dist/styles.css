@@ -5267,6 +5267,9 @@ section {
 .projects-nav {
   margin-bottom: 20px;
   text-align: center; }
+  @media (min-width: 768px) {
+    .projects-nav {
+      margin-bottom: 50px; } }
   .projects-nav p {
     display: inline-block; }
 
