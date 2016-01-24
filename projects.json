@@ -2,7 +2,7 @@
 	"projects": [
 
 		{	
-			"id": 1,
+			"id": 0,
 			"title": "GoWatchIt: Superwidget", 
 			"description":"An API-backed embeddable SDK and theming engine for film releases, TV airdates, and advertising campaigns. Served millions of times a month across the web from major studio properties (Universal, Sony, Paramount, FOX) to large content sites (NYTimes, Buzzfeed, Entertainment Weekly).",
 			"roles": ["Front-End Development", "Art Direction", "Design", "Project Management"],
@@ -33,7 +33,7 @@
 			]
 		},
 		{	
-			"id": 2,
+			"id": 1,
 			"title": "GoWatchIt: Consumer Site", 
 			"description": "Fully responsive consumer web application. Redesigned existing outdated website through managing stakeholders, freelancers, and team members.",
 			"roles": ["Front-End Development", "Art Direction", "Project Management"],
@@ -61,7 +61,7 @@
 			]
 		},
 		{	
-			"id": 3,
+			"id": 2,
 			"title": "GoWatchIt: Dashboard", 
 			"description": "Fully featured content management system (CMS) for film and TV studios. Real-time analytics, custom reporting, and visual asset creation and theming (think Google Analytics and Squarespace for film/TV releases)",
 			"roles": ["Front-End Development", "Design"],
@@ -75,7 +75,7 @@
 		}, 
 
 		{	
-			"id": 4,
+			"id": 3,
 			"title": "Wetfeet: Grad Report", 
 			"description": "Wetfeet, owned by Universum, had exclusive survey data gathered from hundreds of thousands of exiting college students around the world. This interactive report profiled the student and let him or her visualize the results.",
 			"roles": ["Front-End Developer", "Art Direction"],
@@ -95,7 +95,7 @@
 		},
 
 		{	
-			"id": 5,
+			"id": 4,
 			"title": "Wetfeet: Culture Fit Prototype", 
 			"description": "This prototype, subsequently released publicly to college graduates, asked the user a series of polling questions. It matched the prospective job seekers with employer cultures through a basic use of machine learning and a social graph API.",
 			"roles": ["Front-End Development", "Creative"],
@@ -113,7 +113,7 @@
 
 
 			{	
-			"id": 6,
+			"id": 5,
 			"title": "DueProps: Branding and Redesign", 
 			"description": "An HR management app for employee recognition started by (in)famous Ruby and Rails developer and author Obie Fernandez.",
 			"roles": ["Art Direction", "Design", "Front-End Development"],
@@ -140,7 +140,7 @@
 		},
 
 		{	
-			"id": 7,
+			"id": 6,
 			"title": "Flatiron School: Branding", 
 			"description": "Fledgling coding bootcamp needed to make its mark. I worked as Campus Director in the inaugural cohort, handling admissions, events, employer outreach, marketing, social media — and yes, branding.",
 			"roles": ["Art Direction", "Creative"],
@@ -165,7 +165,7 @@
 		
 
 		{	
-			"id": 8,
+			"id": 7,
 			"title": "Breed Breakdown", 
 			"description": "An interactive tool to help the new dog owner find the perfect breed based on their ideal preferences. It has received over 2 million unique visits without an ad spend.",
 			"roles": ["Front-End Developer", "Creative"],
@@ -179,7 +179,7 @@
 
 
 		{	
-			"id": 9,
+			"id": 8,
 			"title": "Scraps", 
 			"description": "Things that don't fit nicely elsewhere: Crafts, past resume iterations, logo experiments, type treatments, and interesting mistakes.",
 			"roles": [],
