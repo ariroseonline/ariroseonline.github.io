@@ -5189,14 +5189,14 @@ ul, ol {
   list-style-type: none; }
 
 p {
-  font-family: 'Titillium Web', sans-serif;
+  font-family: 'Crimson Text', sans-serif;
   font-size: 18px;
-  line-height: 40px;
-  font-weight: 300;
-  letter-spacing: .02em; }
+  line-height: 34px;
+  font-weight: 400;
+  letter-spacing: .01em; }
 
 b, strong {
-  font-family: 'Titillium Web', sans-serif;
+  font-family: 'Crimson Text', sans-serif;
   font-weight: 700; }
 
 .intro p {
@@ -5205,11 +5205,11 @@ b, strong {
 .stripe {
   background: #111;
   margin-top: 40px;
-  margin-bottom: 40px; }
+  margin-bottom: 20px; }
   @media (min-width: 768px) {
     .stripe {
       margin-top: 75px;
-      margin-bottom: 75px; } }
+      margin-bottom: 55px; } }
 
 h1 {
   font-size: 100px;
@@ -5250,12 +5250,13 @@ section {
 .by-line {
   text-align: center; }
   .by-line p {
-    margin-bottom: 0;
-    font-size: 18px;
-    line-height: 40px; }
+    font-size: 34px;
+    line-height: 50px;
+    letter-spacing: -.01em;
+    font-weight: 400; }
   @media (min-width: 768px) {
     .by-line p {
-      font-size: 22px;
+      font-size: 34px;
       line-height: 50px; } }
 
 .projects {
@@ -5269,44 +5270,68 @@ section {
   text-align: center; }
   @media (min-width: 768px) {
     .projects-nav {
-      margin-bottom: 50px; } }
+      margin-bottom: 30px; } }
   .projects-nav p {
     display: inline-block; }
 
+.project-description {
+  margin-bottom: 20px; }
+
 .project-metadata {
   margin-bottom: 40px; }
+  .project-metadata p {
+    font-size: 14px; }
+  .project-metadata strong {
+    font-family: "League Gothic";
+    text-transform: uppercase;
+    font-weight: 400;
+    display: block;
+    font-size: 18px; }
 
 .project-link, .contact-methods a {
-  margin-bottom: 15px;
-  margin-right: 15px;
+  /* text-transform: uppercase; */
+  font-family: 'Crimson Text', sans-serif;
+  color: #222222;
+  margin-bottom: 10px;
+  margin-right: 10px;
   display: inline-block;
   font-size: 15px;
-  background: #F2F2F2;
+  background: #FFFEFE;
   padding: 5px 10px;
   cursor: pointer;
-  color: black;
-  /* text-transform: uppercase; */
-  font-family: 'Titillium Web', sans-serif;
-  transition: all .2s;
-  transform: skewX(-15deg); }
+  font-weight: 100;
+  color: #111;
+  border: 1px solid black; }
+  @media (min-width: 768px) {
+    .project-link, .contact-methods a {
+      margin-bottom: 20px;
+      margin-right: 20px;
+      padding: 5px 20px;
+      font-size: 17px; } }
   .project-link.is-selected, .contact-methods a.is-selected {
-    border-bottom: 5px solid black; }
+    background: #111;
+    color: white; }
   .project-link:hover, .contact-methods a:hover {
-    background: #d9d9d9; }
+    background: #111;
+    color: white; }
+    .project-link:hover.is-selected, .contact-methods a:hover.is-selected {
+      background: #111; }
 
 .project {
   width: 100%;
   text-align: center;
   list-style-type: none; }
   .project p {
-    font-size: 14px;
-    line-height: 23px;
+    font-size: 16px;
+    line-height: 28px;
     text-align: left; }
 
 p.project-title {
-  font-family: 'Titillium Web', sans-serif;
-  font-weight: 700;
-  font-size: 16px; }
+  font-family: 'League Gothic', sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  margin-bottom: 5px;
+  text-transform: uppercase; }
 
 .project-images img {
   max-width: 100%;
@@ -5315,7 +5340,7 @@ p.project-title {
 
 .technology-slot, .role-slot {
   display: inline-block;
-  margin: 5px 0 0 5px;
+  margin: 5px 5px 0 0;
   border-bottom: 1px dotted #A1A1A1;
   line-height: 1;
   padding-bottom: 2px; }

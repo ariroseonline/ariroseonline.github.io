@@ -7,10 +7,10 @@ $.bridget('flickity', Flickity);
 
 $(document).ready(function(){
 
-var lazyLoadImages = function(projectId) {
-	$('.projects').find('[data-project-id=' + projectId + '] img').reveal("fadeIn", 5000);
-	//fadeIn doesn't work...maybe http://stackoverflow.com/questions/3818063/dont-load-hidden-images
-}
+  var lazyLoadImages = function(projectId) {
+  	$('.projects').find('[data-project-id=' + projectId + '] img').reveal("fadeIn", 5000);
+  	//fadeIn doesn't work...maybe http://stackoverflow.com/questions/3818063/dont-load-hidden-images
+  }
 
 	//Don't load images until project clicked on 
 	$("img").not(":visible").each(function () {
@@ -30,6 +30,7 @@ var lazyLoadImages = function(projectId) {
 	var $firstProject = $projects.first()
 
 	$firstProject.removeClass('hide');
+  $('.project-link:first').addClass('is-selected');
 	lazyLoadImages(1); 
 
 	$firstProject.find('.project-images').flickity({
@@ -41,6 +42,10 @@ var lazyLoadImages = function(projectId) {
 	});
 
 	$projectsNav.on('click', '.project-link', function(){
+      //select this project link
+      $('.project-link').removeClass('is-selected');
+      $(this).addClass('is-selected');
+
 			//hide all projects
 			$projects.addClass('hide');
 
