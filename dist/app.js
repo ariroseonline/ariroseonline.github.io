@@ -37,6 +37,7 @@ $(document).ready(function(){
 	  // options
 	  imagesLoaded: true,
 	  wrapAround: false,
+    contain: true,
 	  pageDots: true
 	  // setGallerySize: true
 	});
