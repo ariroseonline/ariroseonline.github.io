@@ -1,0 +1,12 @@
+<script type="text/x-handlebars" data-template-name="application">
+  <div class="container">	
+	  <%= render "header" %>
+	 <p>
+		<%= link_to "Sign Up Now!", new_user_registration_path, class:"btn btn-large btn-primary" %>
+	</p>
+	  {{outlet}}
+
+	  
+	  <%= render "footer" %>
+	</div>
+</script>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+   <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  </head>
+  <body>
+    <h1>Website task</h1>
+    <p>
+     This visitor requested task:
+    </p>
+    <p>
+      <%= @task.name %>
+      <br/> 
+      <%= @task.email %>
+      <br/>
+    </p> 
+    <p>
+      The visitor said:
+    </p>
+    <p>
+      "<%= @task.content %>"
+    </p> 
+  </body>
+</html>

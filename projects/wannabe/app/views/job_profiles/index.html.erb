@@ -1,0 +1,9 @@
+<h1> Title </h1>
+<% @job_profiles.each do |jp| %>
+	<h3>
+		<%= jp.job_title %>
+	</h3>
+	<p>
+		<%= jp.long_description %>
+	</p>
+<% end %>

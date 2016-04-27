@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  age: 1
+  years_exp: 1
+  education: MyString
+  hours_per_week: 1
+  salary: 1
+  long_description: MyText
+  career: MyString
+  job_title: MyString
+
+two:
+  age: 1
+  years_exp: 1
+  education: MyString
+  hours_per_week: 1
+  salary: 1
+  long_description: MyText
+  career: MyString
+  job_title: MyString

@@ -1,0 +1,16 @@
+<%= simple_form_for(@task, html: {class:"form-horizontal"}) do |form| %>
+  <%= form.error_notification %>
+
+  <div class="form-inputs">
+  	<%= form.error_notification %>
+		<%= form.input :name, autofocus: true %> 
+		<%= form.input :email %>
+		<%= form.input :content, as: :text %>
+  </div>
+
+  <div class="form-actions">
+    <%= form.button :submit %>
+  </div>
+<% end %>
+
+
