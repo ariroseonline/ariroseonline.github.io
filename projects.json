@@ -37,7 +37,7 @@
 			"title": "GoWatchIt: Consumer Site", 
 			"description": "Fully responsive consumer web application. Redesigned existing outdated website through managing stakeholders, freelancers, and team members.",
 			"roles": ["Front-End Development", "Art Direction", "Project Management"],
-		  "technologies": ["Javascript", "Ember.js", "SCSS", "Rails", "Handlebars"],
+		  "technologies": ["React", "Javascript", "ES6", "SCSS", "Rails"],
 			"images": [
 				{
 					"url": "projects/gwi-site/1.png"
@@ -89,23 +89,6 @@
 				},
 				{
 					"url": "projects/wetfeet-report/3.png"					
-				}
-
-			]
-		},
-
-		{	
-			"id": 5,
-			"title": "Wetfeet: Culture Fit Prototype", 
-			"description": "This prototype, subsequently released publicly to college graduates, asked the user a series of polling questions. It matched the prospective job seekers with employer cultures through a basic use of machine learning and a social graph API.",
-			"roles": ["Front-End Development", "Creative"],
-			"technologies": ["Javascript", "Angular.js", "SCSS", "HTML", "Wireframing"],
-			"images": [
-				{
-					"url": "projects/wetfeet-polls/1.png"
-				},
-				{
-					"url": "projects/wetfeet-polls/2.png"
 				}
 
 			]
