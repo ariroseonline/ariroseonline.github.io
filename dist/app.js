@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 var $ = require('jquery');
 var Flickity = require('flickity-imagesloaded');
 require('jquery-bridget');
@@ -104,342 +104,458 @@ $(document).ready(function(){
 
 
 
-},{"flickity-imagesloaded":8,"jquery":22,"jquery-bridget":21}],2:[function(require,module,exports){
+},{"flickity-imagesloaded":2,"jquery":29,"jquery-bridget":28}],2:[function(require,module,exports){
 /*!
- * classie v1.0.1
- * class helper functions
- * from bonzo https://github.com/ded/bonzo
- * MIT license
- * 
- * classie.has( elem, 'my-class' ) -> true/false
- * classie.add( elem, 'my-new-class' )
- * classie.remove( elem, 'my-unwanted-class' )
- * classie.toggle( elem, 'my-class' )
+ * Flickity imagesLoaded v1.0.4
+ * enables imagesLoaded option for Flickity
  */
 
 /*jshint browser: true, strict: true, undef: true, unused: true */
-/*global define: false, module: false */
 
-( function( window ) {
+( function( window, factory ) {
+  /*global define: false, module: false, require: false */
+  'use strict';
+  // universal module definition
 
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+      'flickity/js/index',
+      'imagesloaded/imagesloaded'
+    ], function( Flickity, imagesLoaded ) {
+      return factory( window, Flickity, imagesLoaded );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('flickity'),
+      require('imagesloaded')
+    );
+  } else {
+    // browser global
+    window.Flickity = factory(
+      window,
+      window.Flickity,
+      window.imagesLoaded
+    );
+  }
+
+}( window, function factory( window, Flickity, imagesLoaded ) {
 'use strict';
 
-// class helper functions from bonzo https://github.com/ded/bonzo
+Flickity.createMethods.push('_createImagesLoaded');
 
-function classReg( className ) {
-  return new RegExp("(^|\\s+)" + className + "(\\s+|$)");
-}
-
-// classList support for class management
-// altho to be fair, the api sucks because it won't accept multiple classes at once
-var hasClass, addClass, removeClass;
-
-if ( 'classList' in document.documentElement ) {
-  hasClass = function( elem, c ) {
-    return elem.classList.contains( c );
-  };
-  addClass = function( elem, c ) {
-    elem.classList.add( c );
-  };
-  removeClass = function( elem, c ) {
-    elem.classList.remove( c );
-  };
-}
-else {
-  hasClass = function( elem, c ) {
-    return classReg( c ).test( elem.className );
-  };
-  addClass = function( elem, c ) {
-    if ( !hasClass( elem, c ) ) {
-      elem.className = elem.className + ' ' + c;
-    }
-  };
-  removeClass = function( elem, c ) {
-    elem.className = elem.className.replace( classReg( c ), ' ' );
-  };
-}
-
-function toggleClass( elem, c ) {
-  var fn = hasClass( elem, c ) ? removeClass : addClass;
-  fn( elem, c );
-}
-
-var classie = {
-  // full names
-  hasClass: hasClass,
-  addClass: addClass,
-  removeClass: removeClass,
-  toggleClass: toggleClass,
-  // short names
-  has: hasClass,
-  add: addClass,
-  remove: removeClass,
-  toggle: toggleClass
+Flickity.prototype._createImagesLoaded = function() {
+  this.on( 'activate', this.imagesLoaded );
 };
 
-// transport
-if ( typeof define === 'function' && define.amd ) {
-  // AMD
-  define( classie );
-} else if ( typeof exports === 'object' ) {
-  // CommonJS
-  module.exports = classie;
-} else {
-  // browser global
-  window.classie = classie;
-}
+Flickity.prototype.imagesLoaded = function() {
+  if ( !this.options.imagesLoaded ) {
+    return;
+  }
+  var _this = this;
+  function onImagesLoadedProgress( instance, image ) {
+    var cell = _this.getParentCell( image.img );
+    _this.cellSizeChange( cell && cell.element );
+    if ( !_this.options.freeScroll ) {
+      _this.positionSliderAtSelected();
+    }
+  }
+  imagesLoaded( this.slider ).on( 'progress', onImagesLoadedProgress );
+};
 
-})( window );
+return Flickity;
 
-},{}],3:[function(require,module,exports){
+}));
+
+},{"flickity":11,"imagesloaded":3}],3:[function(require,module,exports){
 /*!
- * getStyleProperty v1.0.4
- * original by kangax
- * http://perfectionkills.com/feature-testing-css-properties/
- * MIT license
+ * imagesLoaded v3.2.0
+ * JavaScript is all like "You images are done yet or what?"
+ * MIT License
  */
 
-/*jshint browser: true, strict: true, undef: true */
-/*global define: false, exports: false, module: false */
+( function( window, factory ) { 'use strict';
+  // universal module definition
 
-( function( window ) {
+  /*global define: false, module: false, require: false */
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+      'eventEmitter/EventEmitter',
+      'eventie/eventie'
+    ], function( EventEmitter, eventie ) {
+      return factory( window, EventEmitter, eventie );
+    });
+  } else if ( typeof module == 'object' && module.exports ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('wolfy87-eventemitter'),
+      require('eventie')
+    );
+  } else {
+    // browser global
+    window.imagesLoaded = factory(
+      window,
+      window.EventEmitter,
+      window.eventie
+    );
+  }
+
+})( window,
+
+// --------------------------  factory -------------------------- //
+
+function factory( window, EventEmitter, eventie ) {
 
 'use strict';
 
-var prefixes = 'Webkit Moz ms Ms O'.split(' ');
-var docElemStyle = document.documentElement.style;
+var $ = window.jQuery;
+var console = window.console;
 
-function getStyleProperty( propName ) {
-  if ( !propName ) {
-    return;
+// -------------------------- helpers -------------------------- //
+
+// extend objects
+function extend( a, b ) {
+  for ( var prop in b ) {
+    a[ prop ] = b[ prop ];
   }
-
-  // test standard property first
-  if ( typeof docElemStyle[ propName ] === 'string' ) {
-    return propName;
-  }
-
-  // capitalize
-  propName = propName.charAt(0).toUpperCase() + propName.slice(1);
-
-  // test vendor specific properties
-  var prefixed;
-  for ( var i=0, len = prefixes.length; i < len; i++ ) {
-    prefixed = prefixes[i] + propName;
-    if ( typeof docElemStyle[ prefixed ] === 'string' ) {
-      return prefixed;
-    }
-  }
+  return a;
 }
 
-// transport
-if ( typeof define === 'function' && define.amd ) {
-  // AMD
-  define( function() {
-    return getStyleProperty;
-  });
-} else if ( typeof exports === 'object' ) {
-  // CommonJS for Component
-  module.exports = getStyleProperty;
-} else {
-  // browser global
-  window.getStyleProperty = getStyleProperty;
+var objToString = Object.prototype.toString;
+function isArray( obj ) {
+  return objToString.call( obj ) == '[object Array]';
 }
 
-})( window );
-
-},{}],4:[function(require,module,exports){
-/**
- * matchesSelector v1.0.3
- * matchesSelector( element, '.selector' )
- * MIT license
- */
-
-/*jshint browser: true, strict: true, undef: true, unused: true */
-/*global define: false, module: false */
-
-( function( ElemProto ) {
-
-  'use strict';
-
-  var matchesMethod = ( function() {
-    // check for the standard method name first
-    if ( ElemProto.matches ) {
-      return 'matches';
+// turn element or nodeList into an array
+function makeArray( obj ) {
+  var ary = [];
+  if ( isArray( obj ) ) {
+    // use object if already an array
+    ary = obj;
+  } else if ( typeof obj.length == 'number' ) {
+    // convert nodeList to array
+    for ( var i=0; i < obj.length; i++ ) {
+      ary.push( obj[i] );
     }
-    // check un-prefixed
-    if ( ElemProto.matchesSelector ) {
-      return 'matchesSelector';
+  } else {
+    // array of single index
+    ary.push( obj );
+  }
+  return ary;
+}
+
+  // -------------------------- imagesLoaded -------------------------- //
+
+  /**
+   * @param {Array, Element, NodeList, String} elem
+   * @param {Object or Function} options - if function, use as callback
+   * @param {Function} onAlways - callback function
+   */
+  function ImagesLoaded( elem, options, onAlways ) {
+    // coerce ImagesLoaded() without new, to be new ImagesLoaded()
+    if ( !( this instanceof ImagesLoaded ) ) {
+      return new ImagesLoaded( elem, options, onAlways );
     }
-    // check vendor prefixes
-    var prefixes = [ 'webkit', 'moz', 'ms', 'o' ];
-
-    for ( var i=0, len = prefixes.length; i < len; i++ ) {
-      var prefix = prefixes[i];
-      var method = prefix + 'MatchesSelector';
-      if ( ElemProto[ method ] ) {
-        return method;
-      }
+    // use elem as selector string
+    if ( typeof elem == 'string' ) {
+      elem = document.querySelectorAll( elem );
     }
-  })();
 
-  // ----- match ----- //
+    this.elements = makeArray( elem );
+    this.options = extend( {}, this.options );
 
-  function match( elem, selector ) {
-    return elem[ matchesMethod ]( selector );
+    if ( typeof options == 'function' ) {
+      onAlways = options;
+    } else {
+      extend( this.options, options );
+    }
+
+    if ( onAlways ) {
+      this.on( 'always', onAlways );
+    }
+
+    this.getImages();
+
+    if ( $ ) {
+      // add jQuery Deferred object
+      this.jqDeferred = new $.Deferred();
+    }
+
+    // HACK check async to allow time to bind listeners
+    var _this = this;
+    setTimeout( function() {
+      _this.check();
+    });
   }
 
-  // ----- appendToFragment ----- //
+  ImagesLoaded.prototype = new EventEmitter();
 
-  function checkParent( elem ) {
-    // not needed if already has parent
-    if ( elem.parentNode ) {
+  ImagesLoaded.prototype.options = {};
+
+  ImagesLoaded.prototype.getImages = function() {
+    this.images = [];
+
+    // filter & find items if we have an item selector
+    for ( var i=0; i < this.elements.length; i++ ) {
+      var elem = this.elements[i];
+      this.addElementImages( elem );
+    }
+  };
+
+  /**
+   * @param {Node} element
+   */
+  ImagesLoaded.prototype.addElementImages = function( elem ) {
+    // filter siblings
+    if ( elem.nodeName == 'IMG' ) {
+      this.addImage( elem );
+    }
+    // get background image on element
+    if ( this.options.background === true ) {
+      this.addElementBackgroundImages( elem );
+    }
+
+    // find children
+    // no non-element nodes, #143
+    var nodeType = elem.nodeType;
+    if ( !nodeType || !elementNodeTypes[ nodeType ] ) {
       return;
     }
-    var fragment = document.createDocumentFragment();
-    fragment.appendChild( elem );
-  }
+    var childImgs = elem.querySelectorAll('img');
+    // concat childElems to filterFound array
+    for ( var i=0; i < childImgs.length; i++ ) {
+      var img = childImgs[i];
+      this.addImage( img );
+    }
 
-  // ----- query ----- //
-
-  // fall back to using QSA
-  // thx @jonathantneal https://gist.github.com/3062955
-  function query( elem, selector ) {
-    // append to fragment if no parent
-    checkParent( elem );
-
-    // match elem with all selected elems of parent
-    var elems = elem.parentNode.querySelectorAll( selector );
-    for ( var i=0, len = elems.length; i < len; i++ ) {
-      // return true if match
-      if ( elems[i] === elem ) {
-        return true;
+    // get child background images
+    if ( typeof this.options.background == 'string' ) {
+      var children = elem.querySelectorAll( this.options.background );
+      for ( i=0; i < children.length; i++ ) {
+        var child = children[i];
+        this.addElementBackgroundImages( child );
       }
     }
-    // otherwise return false
-    return false;
+  };
+
+  var elementNodeTypes = {
+    1: true,
+    9: true,
+    11: true
+  };
+
+  ImagesLoaded.prototype.addElementBackgroundImages = function( elem ) {
+    var style = getStyle( elem );
+    // get url inside url("...")
+    var reURL = /url\(['"]*([^'"\)]+)['"]*\)/gi;
+    var matches = reURL.exec( style.backgroundImage );
+    while ( matches !== null ) {
+      var url = matches && matches[1];
+      if ( url ) {
+        this.addBackground( url, elem );
+      }
+      matches = reURL.exec( style.backgroundImage );
+    }
+  };
+
+  // IE8
+  var getStyle = window.getComputedStyle || function( elem ) {
+    return elem.currentStyle;
+  };
+
+  /**
+   * @param {Image} img
+   */
+  ImagesLoaded.prototype.addImage = function( img ) {
+    var loadingImage = new LoadingImage( img );
+    this.images.push( loadingImage );
+  };
+
+  ImagesLoaded.prototype.addBackground = function( url, elem ) {
+    var background = new Background( url, elem );
+    this.images.push( background );
+  };
+
+  ImagesLoaded.prototype.check = function() {
+    var _this = this;
+    this.progressedCount = 0;
+    this.hasAnyBroken = false;
+    // complete if no images
+    if ( !this.images.length ) {
+      this.complete();
+      return;
+    }
+
+    function onProgress( image, elem, message ) {
+      // HACK - Chrome triggers event before object properties have changed. #83
+      setTimeout( function() {
+        _this.progress( image, elem, message );
+      });
+    }
+
+    for ( var i=0; i < this.images.length; i++ ) {
+      var loadingImage = this.images[i];
+      loadingImage.once( 'progress', onProgress );
+      loadingImage.check();
+    }
+  };
+
+  ImagesLoaded.prototype.progress = function( image, elem, message ) {
+    this.progressedCount++;
+    this.hasAnyBroken = this.hasAnyBroken || !image.isLoaded;
+    // progress event
+    this.emit( 'progress', this, image, elem );
+    if ( this.jqDeferred && this.jqDeferred.notify ) {
+      this.jqDeferred.notify( this, image );
+    }
+    // check if completed
+    if ( this.progressedCount == this.images.length ) {
+      this.complete();
+    }
+
+    if ( this.options.debug && console ) {
+      console.log( 'progress: ' + message, image, elem );
+    }
+  };
+
+  ImagesLoaded.prototype.complete = function() {
+    var eventName = this.hasAnyBroken ? 'fail' : 'done';
+    this.isComplete = true;
+    this.emit( eventName, this );
+    this.emit( 'always', this );
+    if ( this.jqDeferred ) {
+      var jqMethod = this.hasAnyBroken ? 'reject' : 'resolve';
+      this.jqDeferred[ jqMethod ]( this );
+    }
+  };
+
+  // --------------------------  -------------------------- //
+
+  function LoadingImage( img ) {
+    this.img = img;
   }
 
-  // ----- matchChild ----- //
+  LoadingImage.prototype = new EventEmitter();
 
-  function matchChild( elem, selector ) {
-    checkParent( elem );
-    return match( elem, selector );
+  LoadingImage.prototype.check = function() {
+    // If complete is true and browser supports natural sizes,
+    // try to check for image status manually.
+    var isComplete = this.getIsImageComplete();
+    if ( isComplete ) {
+      // report based on naturalWidth
+      this.confirm( this.img.naturalWidth !== 0, 'naturalWidth' );
+      return;
+    }
+
+    // If none of the checks above matched, simulate loading on detached element.
+    this.proxyImage = new Image();
+    eventie.bind( this.proxyImage, 'load', this );
+    eventie.bind( this.proxyImage, 'error', this );
+    // bind to image as well for Firefox. #191
+    eventie.bind( this.img, 'load', this );
+    eventie.bind( this.img, 'error', this );
+    this.proxyImage.src = this.img.src;
+  };
+
+  LoadingImage.prototype.getIsImageComplete = function() {
+    return this.img.complete && this.img.naturalWidth !== undefined;
+  };
+
+  LoadingImage.prototype.confirm = function( isLoaded, message ) {
+    this.isLoaded = isLoaded;
+    this.emit( 'progress', this, this.img, message );
+  };
+
+  // ----- events ----- //
+
+  // trigger specified handler for event type
+  LoadingImage.prototype.handleEvent = function( event ) {
+    var method = 'on' + event.type;
+    if ( this[ method ] ) {
+      this[ method ]( event );
+    }
+  };
+
+  LoadingImage.prototype.onload = function() {
+    this.confirm( true, 'onload' );
+    this.unbindEvents();
+  };
+
+  LoadingImage.prototype.onerror = function() {
+    this.confirm( false, 'onerror' );
+    this.unbindEvents();
+  };
+
+  LoadingImage.prototype.unbindEvents = function() {
+    eventie.unbind( this.proxyImage, 'load', this );
+    eventie.unbind( this.proxyImage, 'error', this );
+    eventie.unbind( this.img, 'load', this );
+    eventie.unbind( this.img, 'error', this );
+  };
+
+  // -------------------------- Background -------------------------- //
+
+  function Background( url, element ) {
+    this.url = url;
+    this.element = element;
+    this.img = new Image();
   }
 
-  // ----- matchesSelector ----- //
+  // inherit LoadingImage prototype
+  Background.prototype = new LoadingImage();
 
-  var matchesSelector;
+  Background.prototype.check = function() {
+    eventie.bind( this.img, 'load', this );
+    eventie.bind( this.img, 'error', this );
+    this.img.src = this.url;
+    // check if image is already complete
+    var isComplete = this.getIsImageComplete();
+    if ( isComplete ) {
+      this.confirm( this.img.naturalWidth !== 0, 'naturalWidth' );
+      this.unbindEvents();
+    }
+  };
 
-  if ( matchesMethod ) {
-    // IE9 supports matchesSelector, but doesn't work on orphaned elems
-    // check for that
-    var div = document.createElement('div');
-    var supportsOrphans = match( div, 'div' );
-    matchesSelector = supportsOrphans ? match : matchChild;
-  } else {
-    matchesSelector = query;
-  }
+  Background.prototype.unbindEvents = function() {
+    eventie.unbind( this.img, 'load', this );
+    eventie.unbind( this.img, 'error', this );
+  };
 
-  // transport
-  if ( typeof define === 'function' && define.amd ) {
-    // AMD
-    define( function() {
-      return matchesSelector;
-    });
-  } else if ( typeof exports === 'object' ) {
-    module.exports = matchesSelector;
-  }
-  else {
-    // browser global
-    window.matchesSelector = matchesSelector;
-  }
+  Background.prototype.confirm = function( isLoaded, message ) {
+    this.isLoaded = isLoaded;
+    this.emit( 'progress', this, this.element, message );
+  };
 
-})( Element.prototype );
+  // -------------------------- jQuery -------------------------- //
 
-},{}],5:[function(require,module,exports){
-/*!
- * docReady v1.0.4
- * Cross browser DOMContentLoaded event emitter
- * MIT license
- */
+  ImagesLoaded.makeJQueryPlugin = function( jQuery ) {
+    jQuery = jQuery || window.jQuery;
+    if ( !jQuery ) {
+      return;
+    }
+    // set local variable
+    $ = jQuery;
+    // $().imagesLoaded()
+    $.fn.imagesLoaded = function( options, callback ) {
+      var instance = new ImagesLoaded( this, options, callback );
+      return instance.jqDeferred.promise( $(this) );
+    };
+  };
+  // try making plugin
+  ImagesLoaded.makeJQueryPlugin();
 
-/*jshint browser: true, strict: true, undef: true, unused: true*/
-/*global define: false, require: false, module: false */
+  // --------------------------  -------------------------- //
 
-( function( window ) {
+  return ImagesLoaded;
 
-'use strict';
+});
 
-var document = window.document;
-// collection of functions to be triggered on ready
-var queue = [];
-
-function docReady( fn ) {
-  // throw out non-functions
-  if ( typeof fn !== 'function' ) {
-    return;
-  }
-
-  if ( docReady.isReady ) {
-    // ready now, hit it
-    fn();
-  } else {
-    // queue function when ready
-    queue.push( fn );
-  }
-}
-
-docReady.isReady = false;
-
-// triggered on various doc ready events
-function onReady( event ) {
-  // bail if already triggered or IE8 document is not ready just yet
-  var isIE8NotReady = event.type === 'readystatechange' && document.readyState !== 'complete';
-  if ( docReady.isReady || isIE8NotReady ) {
-    return;
-  }
-
-  trigger();
-}
-
-function trigger() {
-  docReady.isReady = true;
-  // process queue
-  for ( var i=0, len = queue.length; i < len; i++ ) {
-    var fn = queue[i];
-    fn();
-  }
-}
-
-function defineDocReady( eventie ) {
-  // trigger ready if page is ready
-  if ( document.readyState === 'complete' ) {
-    trigger();
-  } else {
-    // listen for events
-    eventie.bind( document, 'DOMContentLoaded', onReady );
-    eventie.bind( document, 'readystatechange', onReady );
-    eventie.bind( window, 'load', onReady );
-  }
-
-  return docReady;
-}
-
-// transport
-if ( typeof define === 'function' && define.amd ) {
-  // AMD
-  define( [ 'eventie/eventie' ], defineDocReady );
-} else if ( typeof exports === 'object' ) {
-  module.exports = defineDocReady( require('eventie') );
-} else {
-  // browser global
-  window.docReady = defineDocReady( window.eventie );
-}
-
-})( window );
-
-},{"eventie":6}],6:[function(require,module,exports){
+},{"eventie":4,"wolfy87-eventemitter":5}],4:[function(require,module,exports){
 /*!
  * eventie v1.0.6
  * event binding helper
@@ -523,344 +639,483 @@ if ( typeof define === 'function' && define.amd ) {
 
 })( window );
 
-},{}],7:[function(require,module,exports){
-/**
- * Fizzy UI utils v1.0.1
- * MIT license
- */
-
-/*jshint browser: true, undef: true, unused: true, strict: true */
-
-( function( window, factory ) {
-  /*global define: false, module: false, require: false */
-  'use strict';
-  // universal module definition
-
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( [
-      'doc-ready/doc-ready',
-      'matches-selector/matches-selector'
-    ], function( docReady, matchesSelector ) {
-      return factory( window, docReady, matchesSelector );
-    });
-  } else if ( typeof exports == 'object' ) {
-    // CommonJS
-    module.exports = factory(
-      window,
-      require('doc-ready'),
-      require('desandro-matches-selector')
-    );
-  } else {
-    // browser global
-    window.fizzyUIUtils = factory(
-      window,
-      window.docReady,
-      window.matchesSelector
-    );
-  }
-
-}( window, function factory( window, docReady, matchesSelector ) {
-
-'use strict';
-
-var utils = {};
-
-// ----- extend ----- //
-
-// extends objects
-utils.extend = function( a, b ) {
-  for ( var prop in b ) {
-    a[ prop ] = b[ prop ];
-  }
-  return a;
-};
-
-// ----- modulo ----- //
-
-utils.modulo = function( num, div ) {
-  return ( ( num % div ) + div ) % div;
-};
-
-// ----- isArray ----- //
-  
-var objToString = Object.prototype.toString;
-utils.isArray = function( obj ) {
-  return objToString.call( obj ) == '[object Array]';
-};
-
-// ----- makeArray ----- //
-
-// turn element or nodeList into an array
-utils.makeArray = function( obj ) {
-  var ary = [];
-  if ( utils.isArray( obj ) ) {
-    // use object if already an array
-    ary = obj;
-  } else if ( obj && typeof obj.length == 'number' ) {
-    // convert nodeList to array
-    for ( var i=0, len = obj.length; i < len; i++ ) {
-      ary.push( obj[i] );
-    }
-  } else {
-    // array of single index
-    ary.push( obj );
-  }
-  return ary;
-};
-
-// ----- indexOf ----- //
-
-// index of helper cause IE8
-utils.indexOf = Array.prototype.indexOf ? function( ary, obj ) {
-    return ary.indexOf( obj );
-  } : function( ary, obj ) {
-    for ( var i=0, len = ary.length; i < len; i++ ) {
-      if ( ary[i] === obj ) {
-        return i;
-      }
-    }
-    return -1;
-  };
-
-// ----- removeFrom ----- //
-
-utils.removeFrom = function( ary, obj ) {
-  var index = utils.indexOf( ary, obj );
-  if ( index != -1 ) {
-    ary.splice( index, 1 );
-  }
-};
-
-// ----- isElement ----- //
-
-// http://stackoverflow.com/a/384380/182183
-utils.isElement = ( typeof HTMLElement == 'function' || typeof HTMLElement == 'object' ) ?
-  function isElementDOM2( obj ) {
-    return obj instanceof HTMLElement;
-  } :
-  function isElementQuirky( obj ) {
-    return obj && typeof obj == 'object' &&
-      obj.nodeType == 1 && typeof obj.nodeName == 'string';
-  };
-
-// ----- setText ----- //
-
-utils.setText = ( function() {
-  var setTextProperty;
-  function setText( elem, text ) {
-    // only check setTextProperty once
-    setTextProperty = setTextProperty || ( document.documentElement.textContent !== undefined ? 'textContent' : 'innerText' );
-    elem[ setTextProperty ] = text;
-  }
-  return setText;
-})();
-
-// ----- getParent ----- //
-
-utils.getParent = function( elem, selector ) {
-  while ( elem != document.body ) {
-    elem = elem.parentNode;
-    if ( matchesSelector( elem, selector ) ) {
-      return elem;
-    }
-  }
-};
-
-// ----- getQueryElement ----- //
-
-// use element as selector string
-utils.getQueryElement = function( elem ) {
-  if ( typeof elem == 'string' ) {
-    return document.querySelector( elem );
-  }
-  return elem;
-};
-
-// ----- handleEvent ----- //
-
-// enable .ontype to trigger from .addEventListener( elem, 'type' )
-utils.handleEvent = function( event ) {
-  var method = 'on' + event.type;
-  if ( this[ method ] ) {
-    this[ method ]( event );
-  }
-};
-
-// ----- filterFindElements ----- //
-
-utils.filterFindElements = function( elems, selector ) {
-  // make array of elems
-  elems = utils.makeArray( elems );
-  var ffElems = [];
-
-  for ( var i=0, len = elems.length; i < len; i++ ) {
-    var elem = elems[i];
-    // check that elem is an actual element
-    if ( !utils.isElement( elem ) ) {
-      continue;
-    }
-    // filter & find items if we have a selector
-    if ( selector ) {
-      // filter siblings
-      if ( matchesSelector( elem, selector ) ) {
-        ffElems.push( elem );
-      }
-      // find children
-      var childElems = elem.querySelectorAll( selector );
-      // concat childElems to filterFound array
-      for ( var j=0, jLen = childElems.length; j < jLen; j++ ) {
-        ffElems.push( childElems[j] );
-      }
-    } else {
-      ffElems.push( elem );
-    }
-  }
-
-  return ffElems;
-};
-
-// ----- debounceMethod ----- //
-
-utils.debounceMethod = function( _class, methodName, threshold ) {
-  // original method
-  var method = _class.prototype[ methodName ];
-  var timeoutName = methodName + 'Timeout';
-
-  _class.prototype[ methodName ] = function() {
-    var timeout = this[ timeoutName ];
-    if ( timeout ) {
-      clearTimeout( timeout );
-    }
-    var args = arguments;
-
-    var _this = this;
-    this[ timeoutName ] = setTimeout( function() {
-      method.apply( _this, args );
-      delete _this[ timeoutName ];
-    }, threshold || 100 );
-  };
-};
-
-// ----- htmlInit ----- //
-
-// http://jamesroberts.name/blog/2010/02/22/string-functions-for-javascript-trim-to-camel-case-to-dashed-and-to-underscore/
-utils.toDashed = function( str ) {
-  return str.replace( /(.)([A-Z])/g, function( match, $1, $2 ) {
-    return $1 + '-' + $2;
-  }).toLowerCase();
-};
-
-var console = window.console;
-/**
- * allow user to initialize classes via .js-namespace class
- * htmlInit( Widget, 'widgetName' )
- * options are parsed from data-namespace-option attribute
- */
-utils.htmlInit = function( WidgetClass, namespace ) {
-  docReady( function() {
-    var dashedNamespace = utils.toDashed( namespace );
-    var elems = document.querySelectorAll( '.js-' + dashedNamespace );
-    var dataAttr = 'data-' + dashedNamespace + '-options';
-
-    for ( var i=0, len = elems.length; i < len; i++ ) {
-      var elem = elems[i];
-      var attr = elem.getAttribute( dataAttr );
-      var options;
-      try {
-        options = attr && JSON.parse( attr );
-      } catch ( error ) {
-        // log error, do not initialize
-        if ( console ) {
-          console.error( 'Error parsing ' + dataAttr + ' on ' +
-            elem.nodeName.toLowerCase() + ( elem.id ? '#' + elem.id : '' ) + ': ' +
-            error );
-        }
-        continue;
-      }
-      // initialize
-      var instance = new WidgetClass( elem, options );
-      // make available via $().data('layoutname')
-      var jQuery = window.jQuery;
-      if ( jQuery ) {
-        jQuery.data( elem, namespace, instance );
-      }
-    }
-  });
-};
-
-// -----  ----- //
-
-return utils;
-
-}));
-
-},{"desandro-matches-selector":4,"doc-ready":5}],8:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 /*!
- * Flickity imagesLoaded v1.0.4
- * enables imagesLoaded option for Flickity
+ * EventEmitter v4.2.11 - git.io/ee
+ * Unlicense - http://unlicense.org/
+ * Oliver Caldwell - http://oli.me.uk/
+ * @preserve
  */
 
-/*jshint browser: true, strict: true, undef: true, unused: true */
+;(function () {
+    'use strict';
 
-( function( window, factory ) {
-  /*global define: false, module: false, require: false */
-  'use strict';
-  // universal module definition
+    /**
+     * Class for managing events.
+     * Can be extended to provide event functionality in other classes.
+     *
+     * @class EventEmitter Manages event registering and emitting.
+     */
+    function EventEmitter() {}
 
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( [
-      'flickity/js/index',
-      'imagesloaded/imagesloaded'
-    ], function( Flickity, imagesLoaded ) {
-      return factory( window, Flickity, imagesLoaded );
-    });
-  } else if ( typeof exports == 'object' ) {
-    // CommonJS
-    module.exports = factory(
-      window,
-      require('flickity'),
-      require('imagesloaded')
-    );
-  } else {
-    // browser global
-    window.Flickity = factory(
-      window,
-      window.Flickity,
-      window.imagesLoaded
-    );
-  }
+    // Shortcuts to improve speed and size
+    var proto = EventEmitter.prototype;
+    var exports = this;
+    var originalGlobalValue = exports.EventEmitter;
 
-}( window, function factory( window, Flickity, imagesLoaded ) {
-'use strict';
+    /**
+     * Finds the index of the listener for the event in its storage array.
+     *
+     * @param {Function[]} listeners Array of listeners to search through.
+     * @param {Function} listener Method to look for.
+     * @return {Number} Index of the specified listener, -1 if not found
+     * @api private
+     */
+    function indexOfListener(listeners, listener) {
+        var i = listeners.length;
+        while (i--) {
+            if (listeners[i].listener === listener) {
+                return i;
+            }
+        }
 
-Flickity.createMethods.push('_createImagesLoaded');
-
-Flickity.prototype._createImagesLoaded = function() {
-  this.on( 'activate', this.imagesLoaded );
-};
-
-Flickity.prototype.imagesLoaded = function() {
-  if ( !this.options.imagesLoaded ) {
-    return;
-  }
-  var _this = this;
-  function onImagesLoadedProgress( instance, image ) {
-    var cell = _this.getParentCell( image.img );
-    _this.cellSizeChange( cell && cell.element );
-    if ( !_this.options.freeScroll ) {
-      _this.positionSliderAtSelected();
+        return -1;
     }
-  }
-  imagesLoaded( this.slider ).on( 'progress', onImagesLoadedProgress );
-};
 
-return Flickity;
+    /**
+     * Alias a method while keeping the context correct, to allow for overwriting of target method.
+     *
+     * @param {String} name The name of the target method.
+     * @return {Function} The aliased method
+     * @api private
+     */
+    function alias(name) {
+        return function aliasClosure() {
+            return this[name].apply(this, arguments);
+        };
+    }
 
-}));
+    /**
+     * Returns the listener array for the specified event.
+     * Will initialise the event object and listener arrays if required.
+     * Will return an object if you use a regex search. The object contains keys for each matched event. So /ba[rz]/ might return an object containing bar and baz. But only if you have either defined them with defineEvent or added some listeners to them.
+     * Each property in the object response is an array of listener functions.
+     *
+     * @param {String|RegExp} evt Name of the event to return the listeners from.
+     * @return {Function[]|Object} All listener functions for the event.
+     */
+    proto.getListeners = function getListeners(evt) {
+        var events = this._getEvents();
+        var response;
+        var key;
 
-},{"flickity":14,"imagesloaded":20}],9:[function(require,module,exports){
+        // Return a concatenated array of all matching events if
+        // the selector is a regular expression.
+        if (evt instanceof RegExp) {
+            response = {};
+            for (key in events) {
+                if (events.hasOwnProperty(key) && evt.test(key)) {
+                    response[key] = events[key];
+                }
+            }
+        }
+        else {
+            response = events[evt] || (events[evt] = []);
+        }
+
+        return response;
+    };
+
+    /**
+     * Takes a list of listener objects and flattens it into a list of listener functions.
+     *
+     * @param {Object[]} listeners Raw listener objects.
+     * @return {Function[]} Just the listener functions.
+     */
+    proto.flattenListeners = function flattenListeners(listeners) {
+        var flatListeners = [];
+        var i;
+
+        for (i = 0; i < listeners.length; i += 1) {
+            flatListeners.push(listeners[i].listener);
+        }
+
+        return flatListeners;
+    };
+
+    /**
+     * Fetches the requested listeners via getListeners but will always return the results inside an object. This is mainly for internal use but others may find it useful.
+     *
+     * @param {String|RegExp} evt Name of the event to return the listeners from.
+     * @return {Object} All listener functions for an event in an object.
+     */
+    proto.getListenersAsObject = function getListenersAsObject(evt) {
+        var listeners = this.getListeners(evt);
+        var response;
+
+        if (listeners instanceof Array) {
+            response = {};
+            response[evt] = listeners;
+        }
+
+        return response || listeners;
+    };
+
+    /**
+     * Adds a listener function to the specified event.
+     * The listener will not be added if it is a duplicate.
+     * If the listener returns true then it will be removed after it is called.
+     * If you pass a regular expression as the event name then the listener will be added to all events that match it.
+     *
+     * @param {String|RegExp} evt Name of the event to attach the listener to.
+     * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.addListener = function addListener(evt, listener) {
+        var listeners = this.getListenersAsObject(evt);
+        var listenerIsWrapped = typeof listener === 'object';
+        var key;
+
+        for (key in listeners) {
+            if (listeners.hasOwnProperty(key) && indexOfListener(listeners[key], listener) === -1) {
+                listeners[key].push(listenerIsWrapped ? listener : {
+                    listener: listener,
+                    once: false
+                });
+            }
+        }
+
+        return this;
+    };
+
+    /**
+     * Alias of addListener
+     */
+    proto.on = alias('addListener');
+
+    /**
+     * Semi-alias of addListener. It will add a listener that will be
+     * automatically removed after its first execution.
+     *
+     * @param {String|RegExp} evt Name of the event to attach the listener to.
+     * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.addOnceListener = function addOnceListener(evt, listener) {
+        return this.addListener(evt, {
+            listener: listener,
+            once: true
+        });
+    };
+
+    /**
+     * Alias of addOnceListener.
+     */
+    proto.once = alias('addOnceListener');
+
+    /**
+     * Defines an event name. This is required if you want to use a regex to add a listener to multiple events at once. If you don't do this then how do you expect it to know what event to add to? Should it just add to every possible match for a regex? No. That is scary and bad.
+     * You need to tell it what event names should be matched by a regex.
+     *
+     * @param {String} evt Name of the event to create.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.defineEvent = function defineEvent(evt) {
+        this.getListeners(evt);
+        return this;
+    };
+
+    /**
+     * Uses defineEvent to define multiple events.
+     *
+     * @param {String[]} evts An array of event names to define.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.defineEvents = function defineEvents(evts) {
+        for (var i = 0; i < evts.length; i += 1) {
+            this.defineEvent(evts[i]);
+        }
+        return this;
+    };
+
+    /**
+     * Removes a listener function from the specified event.
+     * When passed a regular expression as the event name, it will remove the listener from all events that match it.
+     *
+     * @param {String|RegExp} evt Name of the event to remove the listener from.
+     * @param {Function} listener Method to remove from the event.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.removeListener = function removeListener(evt, listener) {
+        var listeners = this.getListenersAsObject(evt);
+        var index;
+        var key;
+
+        for (key in listeners) {
+            if (listeners.hasOwnProperty(key)) {
+                index = indexOfListener(listeners[key], listener);
+
+                if (index !== -1) {
+                    listeners[key].splice(index, 1);
+                }
+            }
+        }
+
+        return this;
+    };
+
+    /**
+     * Alias of removeListener
+     */
+    proto.off = alias('removeListener');
+
+    /**
+     * Adds listeners in bulk using the manipulateListeners method.
+     * If you pass an object as the second argument you can add to multiple events at once. The object should contain key value pairs of events and listeners or listener arrays. You can also pass it an event name and an array of listeners to be added.
+     * You can also pass it a regular expression to add the array of listeners to all events that match it.
+     * Yeah, this function does quite a bit. That's probably a bad thing.
+     *
+     * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add to multiple events at once.
+     * @param {Function[]} [listeners] An optional array of listener functions to add.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.addListeners = function addListeners(evt, listeners) {
+        // Pass through to manipulateListeners
+        return this.manipulateListeners(false, evt, listeners);
+    };
+
+    /**
+     * Removes listeners in bulk using the manipulateListeners method.
+     * If you pass an object as the second argument you can remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
+     * You can also pass it an event name and an array of listeners to be removed.
+     * You can also pass it a regular expression to remove the listeners from all events that match it.
+     *
+     * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to remove from multiple events at once.
+     * @param {Function[]} [listeners] An optional array of listener functions to remove.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.removeListeners = function removeListeners(evt, listeners) {
+        // Pass through to manipulateListeners
+        return this.manipulateListeners(true, evt, listeners);
+    };
+
+    /**
+     * Edits listeners in bulk. The addListeners and removeListeners methods both use this to do their job. You should really use those instead, this is a little lower level.
+     * The first argument will determine if the listeners are removed (true) or added (false).
+     * If you pass an object as the second argument you can add/remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
+     * You can also pass it an event name and an array of listeners to be added/removed.
+     * You can also pass it a regular expression to manipulate the listeners of all events that match it.
+     *
+     * @param {Boolean} remove True if you want to remove listeners, false if you want to add.
+     * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add/remove from multiple events at once.
+     * @param {Function[]} [listeners] An optional array of listener functions to add/remove.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.manipulateListeners = function manipulateListeners(remove, evt, listeners) {
+        var i;
+        var value;
+        var single = remove ? this.removeListener : this.addListener;
+        var multiple = remove ? this.removeListeners : this.addListeners;
+
+        // If evt is an object then pass each of its properties to this method
+        if (typeof evt === 'object' && !(evt instanceof RegExp)) {
+            for (i in evt) {
+                if (evt.hasOwnProperty(i) && (value = evt[i])) {
+                    // Pass the single listener straight through to the singular method
+                    if (typeof value === 'function') {
+                        single.call(this, i, value);
+                    }
+                    else {
+                        // Otherwise pass back to the multiple function
+                        multiple.call(this, i, value);
+                    }
+                }
+            }
+        }
+        else {
+            // So evt must be a string
+            // And listeners must be an array of listeners
+            // Loop over it and pass each one to the multiple method
+            i = listeners.length;
+            while (i--) {
+                single.call(this, evt, listeners[i]);
+            }
+        }
+
+        return this;
+    };
+
+    /**
+     * Removes all listeners from a specified event.
+     * If you do not specify an event then all listeners will be removed.
+     * That means every event will be emptied.
+     * You can also pass a regex to remove all events that match it.
+     *
+     * @param {String|RegExp} [evt] Optional name of the event to remove all listeners for. Will remove from every event if not passed.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.removeEvent = function removeEvent(evt) {
+        var type = typeof evt;
+        var events = this._getEvents();
+        var key;
+
+        // Remove different things depending on the state of evt
+        if (type === 'string') {
+            // Remove all listeners for the specified event
+            delete events[evt];
+        }
+        else if (evt instanceof RegExp) {
+            // Remove all events matching the regex.
+            for (key in events) {
+                if (events.hasOwnProperty(key) && evt.test(key)) {
+                    delete events[key];
+                }
+            }
+        }
+        else {
+            // Remove all listeners in all events
+            delete this._events;
+        }
+
+        return this;
+    };
+
+    /**
+     * Alias of removeEvent.
+     *
+     * Added to mirror the node API.
+     */
+    proto.removeAllListeners = alias('removeEvent');
+
+    /**
+     * Emits an event of your choice.
+     * When emitted, every listener attached to that event will be executed.
+     * If you pass the optional argument array then those arguments will be passed to every listener upon execution.
+     * Because it uses `apply`, your array of arguments will be passed as if you wrote them out separately.
+     * So they will not arrive within the array on the other side, they will be separate.
+     * You can also pass a regular expression to emit to all events that match it.
+     *
+     * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
+     * @param {Array} [args] Optional array of arguments to be passed to each listener.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.emitEvent = function emitEvent(evt, args) {
+        var listenersMap = this.getListenersAsObject(evt);
+        var listeners;
+        var listener;
+        var i;
+        var key;
+        var response;
+
+        for (key in listenersMap) {
+            if (listenersMap.hasOwnProperty(key)) {
+                listeners = listenersMap[key].slice(0);
+                i = listeners.length;
+
+                while (i--) {
+                    // If the listener returns true then it shall be removed from the event
+                    // The function is executed either with a basic call or an apply if there is an args array
+                    listener = listeners[i];
+
+                    if (listener.once === true) {
+                        this.removeListener(evt, listener.listener);
+                    }
+
+                    response = listener.listener.apply(this, args || []);
+
+                    if (response === this._getOnceReturnValue()) {
+                        this.removeListener(evt, listener.listener);
+                    }
+                }
+            }
+        }
+
+        return this;
+    };
+
+    /**
+     * Alias of emitEvent
+     */
+    proto.trigger = alias('emitEvent');
+
+    /**
+     * Subtly different from emitEvent in that it will pass its arguments on to the listeners, as opposed to taking a single array of arguments to pass on.
+     * As with emitEvent, you can pass a regex in place of the event name to emit to all events that match it.
+     *
+     * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
+     * @param {...*} Optional additional arguments to be passed to each listener.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.emit = function emit(evt) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        return this.emitEvent(evt, args);
+    };
+
+    /**
+     * Sets the current value to check against when executing listeners. If a
+     * listeners return value matches the one set here then it will be removed
+     * after execution. This value defaults to true.
+     *
+     * @param {*} value The new value to check for when executing listeners.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.setOnceReturnValue = function setOnceReturnValue(value) {
+        this._onceReturnValue = value;
+        return this;
+    };
+
+    /**
+     * Fetches the current value to check against when executing listeners. If
+     * the listeners return value matches this one then it should be removed
+     * automatically. It will return true by default.
+     *
+     * @return {*|Boolean} The current value to check for or the default, true.
+     * @api private
+     */
+    proto._getOnceReturnValue = function _getOnceReturnValue() {
+        if (this.hasOwnProperty('_onceReturnValue')) {
+            return this._onceReturnValue;
+        }
+        else {
+            return true;
+        }
+    };
+
+    /**
+     * Fetches the events object and creates one if required.
+     *
+     * @return {Object} The events storage object.
+     * @api private
+     */
+    proto._getEvents = function _getEvents() {
+        return this._events || (this._events = {});
+    };
+
+    /**
+     * Reverts the global {@link EventEmitter} to its previous value and returns a reference to this version.
+     *
+     * @return {Function} Non conflicting EventEmitter class.
+     */
+    EventEmitter.noConflict = function noConflict() {
+        exports.EventEmitter = originalGlobalValue;
+        return EventEmitter;
+    };
+
+    // Expose the class either via AMD, CommonJS or the global object
+    if (typeof define === 'function' && define.amd) {
+        define(function () {
+            return EventEmitter;
+        });
+    }
+    else if (typeof module === 'object' && module.exports){
+        module.exports = EventEmitter;
+    }
+    else {
+        exports.EventEmitter = EventEmitter;
+    }
+}.call(this));
+
+},{}],6:[function(require,module,exports){
 ( function( window, factory ) {
   'use strict';
   // universal module definition
@@ -1039,7 +1294,7 @@ return Flickity;
 
 }));
 
-},{"./flickity":13,"fizzy-ui-utils":7}],10:[function(require,module,exports){
+},{"./flickity":10,"fizzy-ui-utils":21}],7:[function(require,module,exports){
 ( function( window, factory ) {
   'use strict';
   // universal module definition
@@ -1297,7 +1552,7 @@ return proto;
 
 }));
 
-},{"desandro-get-style-property":3,"fizzy-ui-utils":7}],11:[function(require,module,exports){
+},{"desandro-get-style-property":17,"fizzy-ui-utils":21}],8:[function(require,module,exports){
 ( function( window, factory ) {
   'use strict';
   // universal module definition
@@ -1392,7 +1647,7 @@ return Cell;
 
 }));
 
-},{"get-size":19}],12:[function(require,module,exports){
+},{"get-size":22}],9:[function(require,module,exports){
 ( function( window, factory ) {
   'use strict';
   // universal module definition
@@ -1724,7 +1979,7 @@ return Flickity;
 
 }));
 
-},{"./flickity":13,"desandro-classie":2,"eventie":6,"fizzy-ui-utils":7,"unidragger":24}],13:[function(require,module,exports){
+},{"./flickity":10,"desandro-classie":16,"eventie":20,"fizzy-ui-utils":21,"unidragger":26}],10:[function(require,module,exports){
 /**
  * Flickity main
  */
@@ -2487,7 +2742,7 @@ return Flickity;
 
 }));
 
-},{"./animate":10,"./cell":11,"desandro-classie":2,"eventie":6,"fizzy-ui-utils":7,"get-size":19,"wolfy87-eventemitter":26}],14:[function(require,module,exports){
+},{"./animate":7,"./cell":8,"desandro-classie":16,"eventie":20,"fizzy-ui-utils":21,"get-size":22,"wolfy87-eventemitter":27}],11:[function(require,module,exports){
 /*!
  * Flickity v1.2.1
  * Touch, responsive, flickable galleries
@@ -2532,7 +2787,7 @@ return Flickity;
   return Flickity;
 });
 
-},{"./add-remove-cell":9,"./drag":12,"./flickity":13,"./lazyload":15,"./page-dots":16,"./player":17,"./prev-next-button":18}],15:[function(require,module,exports){
+},{"./add-remove-cell":6,"./drag":9,"./flickity":10,"./lazyload":12,"./page-dots":13,"./player":14,"./prev-next-button":15}],12:[function(require,module,exports){
 ( function( window, factory ) {
   'use strict';
   // universal module definition
@@ -2660,7 +2915,7 @@ return Flickity;
 
 }));
 
-},{"./flickity":13,"desandro-classie":2,"eventie":6,"fizzy-ui-utils":7}],16:[function(require,module,exports){
+},{"./flickity":10,"desandro-classie":16,"eventie":20,"fizzy-ui-utils":21}],13:[function(require,module,exports){
 ( function( window, factory ) {
   'use strict';
   // universal module definition
@@ -2845,7 +3100,7 @@ return Flickity;
 
 }));
 
-},{"./flickity":13,"eventie":6,"fizzy-ui-utils":7,"tap-listener":23}],17:[function(require,module,exports){
+},{"./flickity":10,"eventie":20,"fizzy-ui-utils":21,"tap-listener":24}],14:[function(require,module,exports){
 ( function( window, factory ) {
   'use strict';
   // universal module definition
@@ -3052,7 +3307,7 @@ return Flickity;
 
 }));
 
-},{"./flickity":13,"eventie":6,"fizzy-ui-utils":7,"wolfy87-eventemitter":26}],18:[function(require,module,exports){
+},{"./flickity":10,"eventie":20,"fizzy-ui-utils":21,"wolfy87-eventemitter":27}],15:[function(require,module,exports){
 // -------------------------- prev/next button -------------------------- //
 
 ( function( window, factory ) {
@@ -3319,7 +3574,616 @@ return Flickity;
 
 }));
 
-},{"./flickity":13,"eventie":6,"fizzy-ui-utils":7,"tap-listener":23}],19:[function(require,module,exports){
+},{"./flickity":10,"eventie":20,"fizzy-ui-utils":21,"tap-listener":24}],16:[function(require,module,exports){
+/*!
+ * classie v1.0.1
+ * class helper functions
+ * from bonzo https://github.com/ded/bonzo
+ * MIT license
+ * 
+ * classie.has( elem, 'my-class' ) -> true/false
+ * classie.add( elem, 'my-new-class' )
+ * classie.remove( elem, 'my-unwanted-class' )
+ * classie.toggle( elem, 'my-class' )
+ */
+
+/*jshint browser: true, strict: true, undef: true, unused: true */
+/*global define: false, module: false */
+
+( function( window ) {
+
+'use strict';
+
+// class helper functions from bonzo https://github.com/ded/bonzo
+
+function classReg( className ) {
+  return new RegExp("(^|\\s+)" + className + "(\\s+|$)");
+}
+
+// classList support for class management
+// altho to be fair, the api sucks because it won't accept multiple classes at once
+var hasClass, addClass, removeClass;
+
+if ( 'classList' in document.documentElement ) {
+  hasClass = function( elem, c ) {
+    return elem.classList.contains( c );
+  };
+  addClass = function( elem, c ) {
+    elem.classList.add( c );
+  };
+  removeClass = function( elem, c ) {
+    elem.classList.remove( c );
+  };
+}
+else {
+  hasClass = function( elem, c ) {
+    return classReg( c ).test( elem.className );
+  };
+  addClass = function( elem, c ) {
+    if ( !hasClass( elem, c ) ) {
+      elem.className = elem.className + ' ' + c;
+    }
+  };
+  removeClass = function( elem, c ) {
+    elem.className = elem.className.replace( classReg( c ), ' ' );
+  };
+}
+
+function toggleClass( elem, c ) {
+  var fn = hasClass( elem, c ) ? removeClass : addClass;
+  fn( elem, c );
+}
+
+var classie = {
+  // full names
+  hasClass: hasClass,
+  addClass: addClass,
+  removeClass: removeClass,
+  toggleClass: toggleClass,
+  // short names
+  has: hasClass,
+  add: addClass,
+  remove: removeClass,
+  toggle: toggleClass
+};
+
+// transport
+if ( typeof define === 'function' && define.amd ) {
+  // AMD
+  define( classie );
+} else if ( typeof exports === 'object' ) {
+  // CommonJS
+  module.exports = classie;
+} else {
+  // browser global
+  window.classie = classie;
+}
+
+})( window );
+
+},{}],17:[function(require,module,exports){
+/*!
+ * getStyleProperty v1.0.4
+ * original by kangax
+ * http://perfectionkills.com/feature-testing-css-properties/
+ * MIT license
+ */
+
+/*jshint browser: true, strict: true, undef: true */
+/*global define: false, exports: false, module: false */
+
+( function( window ) {
+
+'use strict';
+
+var prefixes = 'Webkit Moz ms Ms O'.split(' ');
+var docElemStyle = document.documentElement.style;
+
+function getStyleProperty( propName ) {
+  if ( !propName ) {
+    return;
+  }
+
+  // test standard property first
+  if ( typeof docElemStyle[ propName ] === 'string' ) {
+    return propName;
+  }
+
+  // capitalize
+  propName = propName.charAt(0).toUpperCase() + propName.slice(1);
+
+  // test vendor specific properties
+  var prefixed;
+  for ( var i=0, len = prefixes.length; i < len; i++ ) {
+    prefixed = prefixes[i] + propName;
+    if ( typeof docElemStyle[ prefixed ] === 'string' ) {
+      return prefixed;
+    }
+  }
+}
+
+// transport
+if ( typeof define === 'function' && define.amd ) {
+  // AMD
+  define( function() {
+    return getStyleProperty;
+  });
+} else if ( typeof exports === 'object' ) {
+  // CommonJS for Component
+  module.exports = getStyleProperty;
+} else {
+  // browser global
+  window.getStyleProperty = getStyleProperty;
+}
+
+})( window );
+
+},{}],18:[function(require,module,exports){
+/**
+ * matchesSelector v1.0.3
+ * matchesSelector( element, '.selector' )
+ * MIT license
+ */
+
+/*jshint browser: true, strict: true, undef: true, unused: true */
+/*global define: false, module: false */
+
+( function( ElemProto ) {
+
+  'use strict';
+
+  var matchesMethod = ( function() {
+    // check for the standard method name first
+    if ( ElemProto.matches ) {
+      return 'matches';
+    }
+    // check un-prefixed
+    if ( ElemProto.matchesSelector ) {
+      return 'matchesSelector';
+    }
+    // check vendor prefixes
+    var prefixes = [ 'webkit', 'moz', 'ms', 'o' ];
+
+    for ( var i=0, len = prefixes.length; i < len; i++ ) {
+      var prefix = prefixes[i];
+      var method = prefix + 'MatchesSelector';
+      if ( ElemProto[ method ] ) {
+        return method;
+      }
+    }
+  })();
+
+  // ----- match ----- //
+
+  function match( elem, selector ) {
+    return elem[ matchesMethod ]( selector );
+  }
+
+  // ----- appendToFragment ----- //
+
+  function checkParent( elem ) {
+    // not needed if already has parent
+    if ( elem.parentNode ) {
+      return;
+    }
+    var fragment = document.createDocumentFragment();
+    fragment.appendChild( elem );
+  }
+
+  // ----- query ----- //
+
+  // fall back to using QSA
+  // thx @jonathantneal https://gist.github.com/3062955
+  function query( elem, selector ) {
+    // append to fragment if no parent
+    checkParent( elem );
+
+    // match elem with all selected elems of parent
+    var elems = elem.parentNode.querySelectorAll( selector );
+    for ( var i=0, len = elems.length; i < len; i++ ) {
+      // return true if match
+      if ( elems[i] === elem ) {
+        return true;
+      }
+    }
+    // otherwise return false
+    return false;
+  }
+
+  // ----- matchChild ----- //
+
+  function matchChild( elem, selector ) {
+    checkParent( elem );
+    return match( elem, selector );
+  }
+
+  // ----- matchesSelector ----- //
+
+  var matchesSelector;
+
+  if ( matchesMethod ) {
+    // IE9 supports matchesSelector, but doesn't work on orphaned elems
+    // check for that
+    var div = document.createElement('div');
+    var supportsOrphans = match( div, 'div' );
+    matchesSelector = supportsOrphans ? match : matchChild;
+  } else {
+    matchesSelector = query;
+  }
+
+  // transport
+  if ( typeof define === 'function' && define.amd ) {
+    // AMD
+    define( function() {
+      return matchesSelector;
+    });
+  } else if ( typeof exports === 'object' ) {
+    module.exports = matchesSelector;
+  }
+  else {
+    // browser global
+    window.matchesSelector = matchesSelector;
+  }
+
+})( Element.prototype );
+
+},{}],19:[function(require,module,exports){
+/*!
+ * docReady v1.0.4
+ * Cross browser DOMContentLoaded event emitter
+ * MIT license
+ */
+
+/*jshint browser: true, strict: true, undef: true, unused: true*/
+/*global define: false, require: false, module: false */
+
+( function( window ) {
+
+'use strict';
+
+var document = window.document;
+// collection of functions to be triggered on ready
+var queue = [];
+
+function docReady( fn ) {
+  // throw out non-functions
+  if ( typeof fn !== 'function' ) {
+    return;
+  }
+
+  if ( docReady.isReady ) {
+    // ready now, hit it
+    fn();
+  } else {
+    // queue function when ready
+    queue.push( fn );
+  }
+}
+
+docReady.isReady = false;
+
+// triggered on various doc ready events
+function onReady( event ) {
+  // bail if already triggered or IE8 document is not ready just yet
+  var isIE8NotReady = event.type === 'readystatechange' && document.readyState !== 'complete';
+  if ( docReady.isReady || isIE8NotReady ) {
+    return;
+  }
+
+  trigger();
+}
+
+function trigger() {
+  docReady.isReady = true;
+  // process queue
+  for ( var i=0, len = queue.length; i < len; i++ ) {
+    var fn = queue[i];
+    fn();
+  }
+}
+
+function defineDocReady( eventie ) {
+  // trigger ready if page is ready
+  if ( document.readyState === 'complete' ) {
+    trigger();
+  } else {
+    // listen for events
+    eventie.bind( document, 'DOMContentLoaded', onReady );
+    eventie.bind( document, 'readystatechange', onReady );
+    eventie.bind( window, 'load', onReady );
+  }
+
+  return docReady;
+}
+
+// transport
+if ( typeof define === 'function' && define.amd ) {
+  // AMD
+  define( [ 'eventie/eventie' ], defineDocReady );
+} else if ( typeof exports === 'object' ) {
+  module.exports = defineDocReady( require('eventie') );
+} else {
+  // browser global
+  window.docReady = defineDocReady( window.eventie );
+}
+
+})( window );
+
+},{"eventie":20}],20:[function(require,module,exports){
+arguments[4][4][0].apply(exports,arguments)
+},{"dup":4}],21:[function(require,module,exports){
+/**
+ * Fizzy UI utils v1.0.1
+ * MIT license
+ */
+
+/*jshint browser: true, undef: true, unused: true, strict: true */
+
+( function( window, factory ) {
+  /*global define: false, module: false, require: false */
+  'use strict';
+  // universal module definition
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+      'doc-ready/doc-ready',
+      'matches-selector/matches-selector'
+    ], function( docReady, matchesSelector ) {
+      return factory( window, docReady, matchesSelector );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('doc-ready'),
+      require('desandro-matches-selector')
+    );
+  } else {
+    // browser global
+    window.fizzyUIUtils = factory(
+      window,
+      window.docReady,
+      window.matchesSelector
+    );
+  }
+
+}( window, function factory( window, docReady, matchesSelector ) {
+
+'use strict';
+
+var utils = {};
+
+// ----- extend ----- //
+
+// extends objects
+utils.extend = function( a, b ) {
+  for ( var prop in b ) {
+    a[ prop ] = b[ prop ];
+  }
+  return a;
+};
+
+// ----- modulo ----- //
+
+utils.modulo = function( num, div ) {
+  return ( ( num % div ) + div ) % div;
+};
+
+// ----- isArray ----- //
+  
+var objToString = Object.prototype.toString;
+utils.isArray = function( obj ) {
+  return objToString.call( obj ) == '[object Array]';
+};
+
+// ----- makeArray ----- //
+
+// turn element or nodeList into an array
+utils.makeArray = function( obj ) {
+  var ary = [];
+  if ( utils.isArray( obj ) ) {
+    // use object if already an array
+    ary = obj;
+  } else if ( obj && typeof obj.length == 'number' ) {
+    // convert nodeList to array
+    for ( var i=0, len = obj.length; i < len; i++ ) {
+      ary.push( obj[i] );
+    }
+  } else {
+    // array of single index
+    ary.push( obj );
+  }
+  return ary;
+};
+
+// ----- indexOf ----- //
+
+// index of helper cause IE8
+utils.indexOf = Array.prototype.indexOf ? function( ary, obj ) {
+    return ary.indexOf( obj );
+  } : function( ary, obj ) {
+    for ( var i=0, len = ary.length; i < len; i++ ) {
+      if ( ary[i] === obj ) {
+        return i;
+      }
+    }
+    return -1;
+  };
+
+// ----- removeFrom ----- //
+
+utils.removeFrom = function( ary, obj ) {
+  var index = utils.indexOf( ary, obj );
+  if ( index != -1 ) {
+    ary.splice( index, 1 );
+  }
+};
+
+// ----- isElement ----- //
+
+// http://stackoverflow.com/a/384380/182183
+utils.isElement = ( typeof HTMLElement == 'function' || typeof HTMLElement == 'object' ) ?
+  function isElementDOM2( obj ) {
+    return obj instanceof HTMLElement;
+  } :
+  function isElementQuirky( obj ) {
+    return obj && typeof obj == 'object' &&
+      obj.nodeType == 1 && typeof obj.nodeName == 'string';
+  };
+
+// ----- setText ----- //
+
+utils.setText = ( function() {
+  var setTextProperty;
+  function setText( elem, text ) {
+    // only check setTextProperty once
+    setTextProperty = setTextProperty || ( document.documentElement.textContent !== undefined ? 'textContent' : 'innerText' );
+    elem[ setTextProperty ] = text;
+  }
+  return setText;
+})();
+
+// ----- getParent ----- //
+
+utils.getParent = function( elem, selector ) {
+  while ( elem != document.body ) {
+    elem = elem.parentNode;
+    if ( matchesSelector( elem, selector ) ) {
+      return elem;
+    }
+  }
+};
+
+// ----- getQueryElement ----- //
+
+// use element as selector string
+utils.getQueryElement = function( elem ) {
+  if ( typeof elem == 'string' ) {
+    return document.querySelector( elem );
+  }
+  return elem;
+};
+
+// ----- handleEvent ----- //
+
+// enable .ontype to trigger from .addEventListener( elem, 'type' )
+utils.handleEvent = function( event ) {
+  var method = 'on' + event.type;
+  if ( this[ method ] ) {
+    this[ method ]( event );
+  }
+};
+
+// ----- filterFindElements ----- //
+
+utils.filterFindElements = function( elems, selector ) {
+  // make array of elems
+  elems = utils.makeArray( elems );
+  var ffElems = [];
+
+  for ( var i=0, len = elems.length; i < len; i++ ) {
+    var elem = elems[i];
+    // check that elem is an actual element
+    if ( !utils.isElement( elem ) ) {
+      continue;
+    }
+    // filter & find items if we have a selector
+    if ( selector ) {
+      // filter siblings
+      if ( matchesSelector( elem, selector ) ) {
+        ffElems.push( elem );
+      }
+      // find children
+      var childElems = elem.querySelectorAll( selector );
+      // concat childElems to filterFound array
+      for ( var j=0, jLen = childElems.length; j < jLen; j++ ) {
+        ffElems.push( childElems[j] );
+      }
+    } else {
+      ffElems.push( elem );
+    }
+  }
+
+  return ffElems;
+};
+
+// ----- debounceMethod ----- //
+
+utils.debounceMethod = function( _class, methodName, threshold ) {
+  // original method
+  var method = _class.prototype[ methodName ];
+  var timeoutName = methodName + 'Timeout';
+
+  _class.prototype[ methodName ] = function() {
+    var timeout = this[ timeoutName ];
+    if ( timeout ) {
+      clearTimeout( timeout );
+    }
+    var args = arguments;
+
+    var _this = this;
+    this[ timeoutName ] = setTimeout( function() {
+      method.apply( _this, args );
+      delete _this[ timeoutName ];
+    }, threshold || 100 );
+  };
+};
+
+// ----- htmlInit ----- //
+
+// http://jamesroberts.name/blog/2010/02/22/string-functions-for-javascript-trim-to-camel-case-to-dashed-and-to-underscore/
+utils.toDashed = function( str ) {
+  return str.replace( /(.)([A-Z])/g, function( match, $1, $2 ) {
+    return $1 + '-' + $2;
+  }).toLowerCase();
+};
+
+var console = window.console;
+/**
+ * allow user to initialize classes via .js-namespace class
+ * htmlInit( Widget, 'widgetName' )
+ * options are parsed from data-namespace-option attribute
+ */
+utils.htmlInit = function( WidgetClass, namespace ) {
+  docReady( function() {
+    var dashedNamespace = utils.toDashed( namespace );
+    var elems = document.querySelectorAll( '.js-' + dashedNamespace );
+    var dataAttr = 'data-' + dashedNamespace + '-options';
+
+    for ( var i=0, len = elems.length; i < len; i++ ) {
+      var elem = elems[i];
+      var attr = elem.getAttribute( dataAttr );
+      var options;
+      try {
+        options = attr && JSON.parse( attr );
+      } catch ( error ) {
+        // log error, do not initialize
+        if ( console ) {
+          console.error( 'Error parsing ' + dataAttr + ' on ' +
+            elem.nodeName.toLowerCase() + ( elem.id ? '#' + elem.id : '' ) + ': ' +
+            error );
+        }
+        continue;
+      }
+      // initialize
+      var instance = new WidgetClass( elem, options );
+      // make available via $().data('layoutname')
+      var jQuery = window.jQuery;
+      if ( jQuery ) {
+        jQuery.data( elem, namespace, instance );
+      }
+    }
+  });
+};
+
+// -----  ----- //
+
+return utils;
+
+}));
+
+},{"desandro-matches-selector":18,"doc-ready":19}],22:[function(require,module,exports){
 /*!
  * getSize v1.2.2
  * measure size of elements
@@ -3571,17 +4435,19 @@ if ( typeof define === 'function' && define.amd ) {
 
 })( window );
 
-},{"desandro-get-style-property":3}],20:[function(require,module,exports){
+},{"desandro-get-style-property":17}],23:[function(require,module,exports){
 /*!
- * imagesLoaded v3.2.0
- * JavaScript is all like "You images are done yet or what?"
- * MIT License
+ * Unipointer v1.1.0
+ * base class for doing one thing with pointer event
+ * MIT license
  */
 
-( function( window, factory ) { 'use strict';
-  // universal module definition
+/*jshint browser: true, undef: true, unused: true, strict: true */
+/*global define: false, module: false, require: false */
 
-  /*global define: false, module: false, require: false */
+( function( window, factory ) {
+  'use strict';
+  // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
     // AMD
@@ -3591,7 +4457,7 @@ if ( typeof define === 'function' && define.amd ) {
     ], function( EventEmitter, eventie ) {
       return factory( window, EventEmitter, eventie );
     });
-  } else if ( typeof module == 'object' && module.exports ) {
+  } else if ( typeof exports == 'object' ) {
     // CommonJS
     module.exports = factory(
       window,
@@ -3600,364 +4466,1254 @@ if ( typeof define === 'function' && define.amd ) {
     );
   } else {
     // browser global
-    window.imagesLoaded = factory(
+    window.Unipointer = factory(
       window,
       window.EventEmitter,
       window.eventie
     );
   }
 
-})( window,
-
-// --------------------------  factory -------------------------- //
-
-function factory( window, EventEmitter, eventie ) {
+}( window, function factory( window, EventEmitter, eventie ) {
 
 'use strict';
 
-var $ = window.jQuery;
-var console = window.console;
+function noop() {}
 
-// -------------------------- helpers -------------------------- //
+function Unipointer() {}
 
-// extend objects
-function extend( a, b ) {
-  for ( var prop in b ) {
-    a[ prop ] = b[ prop ];
-  }
-  return a;
-}
+// inherit EventEmitter
+Unipointer.prototype = new EventEmitter();
 
-var objToString = Object.prototype.toString;
-function isArray( obj ) {
-  return objToString.call( obj ) == '[object Array]';
-}
+Unipointer.prototype.bindStartEvent = function( elem ) {
+  this._bindStartEvent( elem, true );
+};
 
-// turn element or nodeList into an array
-function makeArray( obj ) {
-  var ary = [];
-  if ( isArray( obj ) ) {
-    // use object if already an array
-    ary = obj;
-  } else if ( typeof obj.length == 'number' ) {
-    // convert nodeList to array
-    for ( var i=0; i < obj.length; i++ ) {
-      ary.push( obj[i] );
-    }
+Unipointer.prototype.unbindStartEvent = function( elem ) {
+  this._bindStartEvent( elem, false );
+};
+
+/**
+ * works as unbinder, as you can ._bindStart( false ) to unbind
+ * @param {Boolean} isBind - will unbind if falsey
+ */
+Unipointer.prototype._bindStartEvent = function( elem, isBind ) {
+  // munge isBind, default to true
+  isBind = isBind === undefined ? true : !!isBind;
+  var bindMethod = isBind ? 'bind' : 'unbind';
+
+  if ( window.navigator.pointerEnabled ) {
+    // W3C Pointer Events, IE11. See https://coderwall.com/p/mfreca
+    eventie[ bindMethod ]( elem, 'pointerdown', this );
+  } else if ( window.navigator.msPointerEnabled ) {
+    // IE10 Pointer Events
+    eventie[ bindMethod ]( elem, 'MSPointerDown', this );
   } else {
-    // array of single index
-    ary.push( obj );
+    // listen for both, for devices like Chrome Pixel
+    eventie[ bindMethod ]( elem, 'mousedown', this );
+    eventie[ bindMethod ]( elem, 'touchstart', this );
   }
-  return ary;
+};
+
+// trigger handler methods for events
+Unipointer.prototype.handleEvent = function( event ) {
+  var method = 'on' + event.type;
+  if ( this[ method ] ) {
+    this[ method ]( event );
+  }
+};
+
+// returns the touch that we're keeping track of
+Unipointer.prototype.getTouch = function( touches ) {
+  for ( var i=0, len = touches.length; i < len; i++ ) {
+    var touch = touches[i];
+    if ( touch.identifier == this.pointerIdentifier ) {
+      return touch;
+    }
+  }
+};
+
+// ----- start event ----- //
+
+Unipointer.prototype.onmousedown = function( event ) {
+  // dismiss clicks from right or middle buttons
+  var button = event.button;
+  if ( button && ( button !== 0 && button !== 1 ) ) {
+    return;
+  }
+  this._pointerDown( event, event );
+};
+
+Unipointer.prototype.ontouchstart = function( event ) {
+  this._pointerDown( event, event.changedTouches[0] );
+};
+
+Unipointer.prototype.onMSPointerDown =
+Unipointer.prototype.onpointerdown = function( event ) {
+  this._pointerDown( event, event );
+};
+
+/**
+ * pointer start
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ */
+Unipointer.prototype._pointerDown = function( event, pointer ) {
+  // dismiss other pointers
+  if ( this.isPointerDown ) {
+    return;
+  }
+
+  this.isPointerDown = true;
+  // save pointer identifier to match up touch events
+  this.pointerIdentifier = pointer.pointerId !== undefined ?
+    // pointerId for pointer events, touch.indentifier for touch events
+    pointer.pointerId : pointer.identifier;
+
+  this.pointerDown( event, pointer );
+};
+
+Unipointer.prototype.pointerDown = function( event, pointer ) {
+  this._bindPostStartEvents( event );
+  this.emitEvent( 'pointerDown', [ event, pointer ] );
+};
+
+// hash of events to be bound after start event
+var postStartEvents = {
+  mousedown: [ 'mousemove', 'mouseup' ],
+  touchstart: [ 'touchmove', 'touchend', 'touchcancel' ],
+  pointerdown: [ 'pointermove', 'pointerup', 'pointercancel' ],
+  MSPointerDown: [ 'MSPointerMove', 'MSPointerUp', 'MSPointerCancel' ]
+};
+
+Unipointer.prototype._bindPostStartEvents = function( event ) {
+  if ( !event ) {
+    return;
+  }
+  // get proper events to match start event
+  var events = postStartEvents[ event.type ];
+  // IE8 needs to be bound to document
+  var node = event.preventDefault ? window : document;
+  // bind events to node
+  for ( var i=0, len = events.length; i < len; i++ ) {
+    var evnt = events[i];
+    eventie.bind( node, evnt, this );
+  }
+  // save these arguments
+  this._boundPointerEvents = {
+    events: events,
+    node: node
+  };
+};
+
+Unipointer.prototype._unbindPostStartEvents = function() {
+  var args = this._boundPointerEvents;
+  // IE8 can trigger dragEnd twice, check for _boundEvents
+  if ( !args || !args.events ) {
+    return;
+  }
+
+  for ( var i=0, len = args.events.length; i < len; i++ ) {
+    var event = args.events[i];
+    eventie.unbind( args.node, event, this );
+  }
+  delete this._boundPointerEvents;
+};
+
+// ----- move event ----- //
+
+Unipointer.prototype.onmousemove = function( event ) {
+  this._pointerMove( event, event );
+};
+
+Unipointer.prototype.onMSPointerMove =
+Unipointer.prototype.onpointermove = function( event ) {
+  if ( event.pointerId == this.pointerIdentifier ) {
+    this._pointerMove( event, event );
+  }
+};
+
+Unipointer.prototype.ontouchmove = function( event ) {
+  var touch = this.getTouch( event.changedTouches );
+  if ( touch ) {
+    this._pointerMove( event, touch );
+  }
+};
+
+/**
+ * pointer move
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ * @private
+ */
+Unipointer.prototype._pointerMove = function( event, pointer ) {
+  this.pointerMove( event, pointer );
+};
+
+// public
+Unipointer.prototype.pointerMove = function( event, pointer ) {
+  this.emitEvent( 'pointerMove', [ event, pointer ] );
+};
+
+// ----- end event ----- //
+
+
+Unipointer.prototype.onmouseup = function( event ) {
+  this._pointerUp( event, event );
+};
+
+Unipointer.prototype.onMSPointerUp =
+Unipointer.prototype.onpointerup = function( event ) {
+  if ( event.pointerId == this.pointerIdentifier ) {
+    this._pointerUp( event, event );
+  }
+};
+
+Unipointer.prototype.ontouchend = function( event ) {
+  var touch = this.getTouch( event.changedTouches );
+  if ( touch ) {
+    this._pointerUp( event, touch );
+  }
+};
+
+/**
+ * pointer up
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ * @private
+ */
+Unipointer.prototype._pointerUp = function( event, pointer ) {
+  this._pointerDone();
+  this.pointerUp( event, pointer );
+};
+
+// public
+Unipointer.prototype.pointerUp = function( event, pointer ) {
+  this.emitEvent( 'pointerUp', [ event, pointer ] );
+};
+
+// ----- pointer done ----- //
+
+// triggered on pointer up & pointer cancel
+Unipointer.prototype._pointerDone = function() {
+  // reset properties
+  this.isPointerDown = false;
+  delete this.pointerIdentifier;
+  // remove events
+  this._unbindPostStartEvents();
+  this.pointerDone();
+};
+
+Unipointer.prototype.pointerDone = noop;
+
+// ----- pointer cancel ----- //
+
+Unipointer.prototype.onMSPointerCancel =
+Unipointer.prototype.onpointercancel = function( event ) {
+  if ( event.pointerId == this.pointerIdentifier ) {
+    this._pointerCancel( event, event );
+  }
+};
+
+Unipointer.prototype.ontouchcancel = function( event ) {
+  var touch = this.getTouch( event.changedTouches );
+  if ( touch ) {
+    this._pointerCancel( event, touch );
+  }
+};
+
+/**
+ * pointer cancel
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ * @private
+ */
+Unipointer.prototype._pointerCancel = function( event, pointer ) {
+  this._pointerDone();
+  this.pointerCancel( event, pointer );
+};
+
+// public
+Unipointer.prototype.pointerCancel = function( event, pointer ) {
+  this.emitEvent( 'pointerCancel', [ event, pointer ] );
+};
+
+// -----  ----- //
+
+// utility function for getting x/y cooridinates from event, because IE8
+Unipointer.getPointerPoint = function( pointer ) {
+  return {
+    x: pointer.pageX !== undefined ? pointer.pageX : pointer.clientX,
+    y: pointer.pageY !== undefined ? pointer.pageY : pointer.clientY
+  };
+};
+
+// -----  ----- //
+
+return Unipointer;
+
+}));
+
+},{"eventie":20,"wolfy87-eventemitter":27}],24:[function(require,module,exports){
+/*!
+ * Tap listener v1.1.2
+ * listens to taps
+ * MIT license
+ */
+
+/*jshint browser: true, unused: true, undef: true, strict: true */
+
+( function( window, factory ) {
+  // universal module definition
+  /*jshint strict: false*/ /*globals define, module, require */
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+      'unipointer/unipointer'
+    ], function( Unipointer ) {
+      return factory( window, Unipointer );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('unipointer')
+    );
+  } else {
+    // browser global
+    window.TapListener = factory(
+      window,
+      window.Unipointer
+    );
+  }
+
+}( window, function factory( window, Unipointer ) {
+
+'use strict';
+
+// --------------------------  TapListener -------------------------- //
+
+function TapListener( elem ) {
+  this.bindTap( elem );
 }
 
-  // -------------------------- imagesLoaded -------------------------- //
+// inherit Unipointer & EventEmitter
+TapListener.prototype = new Unipointer();
 
-  /**
-   * @param {Array, Element, NodeList, String} elem
-   * @param {Object or Function} options - if function, use as callback
-   * @param {Function} onAlways - callback function
-   */
-  function ImagesLoaded( elem, options, onAlways ) {
-    // coerce ImagesLoaded() without new, to be new ImagesLoaded()
-    if ( !( this instanceof ImagesLoaded ) ) {
-      return new ImagesLoaded( elem, options, onAlways );
-    }
-    // use elem as selector string
-    if ( typeof elem == 'string' ) {
-      elem = document.querySelectorAll( elem );
-    }
+/**
+ * bind tap event to element
+ * @param {Element} elem
+ */
+TapListener.prototype.bindTap = function( elem ) {
+  if ( !elem ) {
+    return;
+  }
+  this.unbindTap();
+  this.tapElement = elem;
+  this._bindStartEvent( elem, true );
+};
 
-    this.elements = makeArray( elem );
-    this.options = extend( {}, this.options );
+TapListener.prototype.unbindTap = function() {
+  if ( !this.tapElement ) {
+    return;
+  }
+  this._bindStartEvent( this.tapElement, true );
+  delete this.tapElement;
+};
 
-    if ( typeof options == 'function' ) {
-      onAlways = options;
-    } else {
-      extend( this.options, options );
-    }
+var isPageOffset = window.pageYOffset !== undefined;
+/**
+ * pointer up
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ */
+TapListener.prototype.pointerUp = function( event, pointer ) {
+  // ignore emulated mouse up clicks
+  if ( this.isIgnoringMouseUp && event.type == 'mouseup' ) {
+    return;
+  }
 
-    if ( onAlways ) {
-      this.on( 'always', onAlways );
-    }
+  var pointerPoint = Unipointer.getPointerPoint( pointer );
+  var boundingRect = this.tapElement.getBoundingClientRect();
+  // standard or IE8 scroll positions
+  var scrollX = isPageOffset ? window.pageXOffset : document.body.scrollLeft;
+  var scrollY = isPageOffset ? window.pageYOffset : document.body.scrollTop;
+  // calculate if pointer is inside tapElement
+  var isInside = pointerPoint.x >= boundingRect.left + scrollX &&
+    pointerPoint.x <= boundingRect.right + scrollX &&
+    pointerPoint.y >= boundingRect.top + scrollY &&
+    pointerPoint.y <= boundingRect.bottom + scrollY;
+  // trigger callback if pointer is inside element
+  if ( isInside ) {
+    this.emitEvent( 'tap', [ event, pointer ] );
+  }
 
-    this.getImages();
-
-    if ( $ ) {
-      // add jQuery Deferred object
-      this.jqDeferred = new $.Deferred();
-    }
-
-    // HACK check async to allow time to bind listeners
-    var _this = this;
+  // set flag for emulated clicks 300ms after touchend
+  if ( event.type != 'mouseup' ) {
+    this.isIgnoringMouseUp = true;
+    // reset flag after 300ms
     setTimeout( function() {
-      _this.check();
+      delete this.isIgnoringMouseUp;
+    }.bind( this ), 320 );
+  }
+};
+
+TapListener.prototype.destroy = function() {
+  this.pointerDone();
+  this.unbindTap();
+};
+
+// -----  ----- //
+
+return TapListener;
+
+}));
+
+},{"unipointer":23}],25:[function(require,module,exports){
+arguments[4][23][0].apply(exports,arguments)
+},{"dup":23,"eventie":20,"wolfy87-eventemitter":27}],26:[function(require,module,exports){
+/*!
+ * Unidragger v1.1.5
+ * Draggable base class
+ * MIT license
+ */
+
+/*jshint browser: true, unused: true, undef: true, strict: true */
+
+( function( window, factory ) {
+  /*global define: false, module: false, require: false */
+  'use strict';
+  // universal module definition
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+      'eventie/eventie',
+      'unipointer/unipointer'
+    ], function( eventie, Unipointer ) {
+      return factory( window, eventie, Unipointer );
     });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('eventie'),
+      require('unipointer')
+    );
+  } else {
+    // browser global
+    window.Unidragger = factory(
+      window,
+      window.eventie,
+      window.Unipointer
+    );
   }
 
-  ImagesLoaded.prototype = new EventEmitter();
+}( window, function factory( window, eventie, Unipointer ) {
 
-  ImagesLoaded.prototype.options = {};
+'use strict';
 
-  ImagesLoaded.prototype.getImages = function() {
-    this.images = [];
+// -----  ----- //
 
-    // filter & find items if we have an item selector
-    for ( var i=0; i < this.elements.length; i++ ) {
-      var elem = this.elements[i];
-      this.addElementImages( elem );
-    }
-  };
+function noop() {}
 
-  /**
-   * @param {Node} element
-   */
-  ImagesLoaded.prototype.addElementImages = function( elem ) {
-    // filter siblings
-    if ( elem.nodeName == 'IMG' ) {
-      this.addImage( elem );
-    }
-    // get background image on element
-    if ( this.options.background === true ) {
-      this.addElementBackgroundImages( elem );
-    }
-
-    // find children
-    // no non-element nodes, #143
-    var nodeType = elem.nodeType;
-    if ( !nodeType || !elementNodeTypes[ nodeType ] ) {
-      return;
-    }
-    var childImgs = elem.querySelectorAll('img');
-    // concat childElems to filterFound array
-    for ( var i=0; i < childImgs.length; i++ ) {
-      var img = childImgs[i];
-      this.addImage( img );
-    }
-
-    // get child background images
-    if ( typeof this.options.background == 'string' ) {
-      var children = elem.querySelectorAll( this.options.background );
-      for ( i=0; i < children.length; i++ ) {
-        var child = children[i];
-        this.addElementBackgroundImages( child );
-      }
-    }
-  };
-
-  var elementNodeTypes = {
-    1: true,
-    9: true,
-    11: true
-  };
-
-  ImagesLoaded.prototype.addElementBackgroundImages = function( elem ) {
-    var style = getStyle( elem );
-    // get url inside url("...")
-    var reURL = /url\(['"]*([^'"\)]+)['"]*\)/gi;
-    var matches = reURL.exec( style.backgroundImage );
-    while ( matches !== null ) {
-      var url = matches && matches[1];
-      if ( url ) {
-        this.addBackground( url, elem );
-      }
-      matches = reURL.exec( style.backgroundImage );
-    }
-  };
-
-  // IE8
-  var getStyle = window.getComputedStyle || function( elem ) {
-    return elem.currentStyle;
-  };
-
-  /**
-   * @param {Image} img
-   */
-  ImagesLoaded.prototype.addImage = function( img ) {
-    var loadingImage = new LoadingImage( img );
-    this.images.push( loadingImage );
-  };
-
-  ImagesLoaded.prototype.addBackground = function( url, elem ) {
-    var background = new Background( url, elem );
-    this.images.push( background );
-  };
-
-  ImagesLoaded.prototype.check = function() {
-    var _this = this;
-    this.progressedCount = 0;
-    this.hasAnyBroken = false;
-    // complete if no images
-    if ( !this.images.length ) {
-      this.complete();
-      return;
-    }
-
-    function onProgress( image, elem, message ) {
-      // HACK - Chrome triggers event before object properties have changed. #83
-      setTimeout( function() {
-        _this.progress( image, elem, message );
-      });
-    }
-
-    for ( var i=0; i < this.images.length; i++ ) {
-      var loadingImage = this.images[i];
-      loadingImage.once( 'progress', onProgress );
-      loadingImage.check();
-    }
-  };
-
-  ImagesLoaded.prototype.progress = function( image, elem, message ) {
-    this.progressedCount++;
-    this.hasAnyBroken = this.hasAnyBroken || !image.isLoaded;
-    // progress event
-    this.emit( 'progress', this, image, elem );
-    if ( this.jqDeferred && this.jqDeferred.notify ) {
-      this.jqDeferred.notify( this, image );
-    }
-    // check if completed
-    if ( this.progressedCount == this.images.length ) {
-      this.complete();
-    }
-
-    if ( this.options.debug && console ) {
-      console.log( 'progress: ' + message, image, elem );
-    }
-  };
-
-  ImagesLoaded.prototype.complete = function() {
-    var eventName = this.hasAnyBroken ? 'fail' : 'done';
-    this.isComplete = true;
-    this.emit( eventName, this );
-    this.emit( 'always', this );
-    if ( this.jqDeferred ) {
-      var jqMethod = this.hasAnyBroken ? 'reject' : 'resolve';
-      this.jqDeferred[ jqMethod ]( this );
-    }
-  };
-
-  // --------------------------  -------------------------- //
-
-  function LoadingImage( img ) {
-    this.img = img;
+// handle IE8 prevent default
+function preventDefaultEvent( event ) {
+  if ( event.preventDefault ) {
+    event.preventDefault();
+  } else {
+    event.returnValue = false;
   }
+}
 
-  LoadingImage.prototype = new EventEmitter();
+// -------------------------- Unidragger -------------------------- //
 
-  LoadingImage.prototype.check = function() {
-    // If complete is true and browser supports natural sizes,
-    // try to check for image status manually.
-    var isComplete = this.getIsImageComplete();
-    if ( isComplete ) {
-      // report based on naturalWidth
-      this.confirm( this.img.naturalWidth !== 0, 'naturalWidth' );
-      return;
-    }
+function Unidragger() {}
 
-    // If none of the checks above matched, simulate loading on detached element.
-    this.proxyImage = new Image();
-    eventie.bind( this.proxyImage, 'load', this );
-    eventie.bind( this.proxyImage, 'error', this );
-    // bind to image as well for Firefox. #191
-    eventie.bind( this.img, 'load', this );
-    eventie.bind( this.img, 'error', this );
-    this.proxyImage.src = this.img.src;
-  };
+// inherit Unipointer & EventEmitter
+Unidragger.prototype = new Unipointer();
 
-  LoadingImage.prototype.getIsImageComplete = function() {
-    return this.img.complete && this.img.naturalWidth !== undefined;
-  };
+// ----- bind start ----- //
 
-  LoadingImage.prototype.confirm = function( isLoaded, message ) {
-    this.isLoaded = isLoaded;
-    this.emit( 'progress', this, this.img, message );
-  };
+Unidragger.prototype.bindHandles = function() {
+  this._bindHandles( true );
+};
 
-  // ----- events ----- //
+Unidragger.prototype.unbindHandles = function() {
+  this._bindHandles( false );
+};
 
-  // trigger specified handler for event type
-  LoadingImage.prototype.handleEvent = function( event ) {
-    var method = 'on' + event.type;
-    if ( this[ method ] ) {
-      this[ method ]( event );
-    }
-  };
-
-  LoadingImage.prototype.onload = function() {
-    this.confirm( true, 'onload' );
-    this.unbindEvents();
-  };
-
-  LoadingImage.prototype.onerror = function() {
-    this.confirm( false, 'onerror' );
-    this.unbindEvents();
-  };
-
-  LoadingImage.prototype.unbindEvents = function() {
-    eventie.unbind( this.proxyImage, 'load', this );
-    eventie.unbind( this.proxyImage, 'error', this );
-    eventie.unbind( this.img, 'load', this );
-    eventie.unbind( this.img, 'error', this );
-  };
-
-  // -------------------------- Background -------------------------- //
-
-  function Background( url, element ) {
-    this.url = url;
-    this.element = element;
-    this.img = new Image();
-  }
-
-  // inherit LoadingImage prototype
-  Background.prototype = new LoadingImage();
-
-  Background.prototype.check = function() {
-    eventie.bind( this.img, 'load', this );
-    eventie.bind( this.img, 'error', this );
-    this.img.src = this.url;
-    // check if image is already complete
-    var isComplete = this.getIsImageComplete();
-    if ( isComplete ) {
-      this.confirm( this.img.naturalWidth !== 0, 'naturalWidth' );
-      this.unbindEvents();
-    }
-  };
-
-  Background.prototype.unbindEvents = function() {
-    eventie.unbind( this.img, 'load', this );
-    eventie.unbind( this.img, 'error', this );
-  };
-
-  Background.prototype.confirm = function( isLoaded, message ) {
-    this.isLoaded = isLoaded;
-    this.emit( 'progress', this, this.element, message );
-  };
-
-  // -------------------------- jQuery -------------------------- //
-
-  ImagesLoaded.makeJQueryPlugin = function( jQuery ) {
-    jQuery = jQuery || window.jQuery;
-    if ( !jQuery ) {
-      return;
-    }
-    // set local variable
-    $ = jQuery;
-    // $().imagesLoaded()
-    $.fn.imagesLoaded = function( options, callback ) {
-      var instance = new ImagesLoaded( this, options, callback );
-      return instance.jqDeferred.promise( $(this) );
+var navigator = window.navigator;
+/**
+ * works as unbinder, as you can .bindHandles( false ) to unbind
+ * @param {Boolean} isBind - will unbind if falsey
+ */
+Unidragger.prototype._bindHandles = function( isBind ) {
+  // munge isBind, default to true
+  isBind = isBind === undefined ? true : !!isBind;
+  // extra bind logic
+  var binderExtra;
+  if ( navigator.pointerEnabled ) {
+    binderExtra = function( handle ) {
+      // disable scrolling on the element
+      handle.style.touchAction = isBind ? 'none' : '';
     };
+  } else if ( navigator.msPointerEnabled ) {
+    binderExtra = function( handle ) {
+      // disable scrolling on the element
+      handle.style.msTouchAction = isBind ? 'none' : '';
+    };
+  } else {
+    binderExtra = function() {
+      // TODO re-enable img.ondragstart when unbinding
+      if ( isBind ) {
+        disableImgOndragstart( handle );
+      }
+    };
+  }
+  // bind each handle
+  var bindMethod = isBind ? 'bind' : 'unbind';
+  for ( var i=0, len = this.handles.length; i < len; i++ ) {
+    var handle = this.handles[i];
+    this._bindStartEvent( handle, isBind );
+    binderExtra( handle );
+    eventie[ bindMethod ]( handle, 'click', this );
+  }
+};
+
+// remove default dragging interaction on all images in IE8
+// IE8 does its own drag thing on images, which messes stuff up
+
+function noDragStart() {
+  return false;
+}
+
+// TODO replace this with a IE8 test
+var isIE8 = 'attachEvent' in document.documentElement;
+
+// IE8 only
+var disableImgOndragstart = !isIE8 ? noop : function( handle ) {
+
+  if ( handle.nodeName == 'IMG' ) {
+    handle.ondragstart = noDragStart;
+  }
+
+  var images = handle.querySelectorAll('img');
+  for ( var i=0, len = images.length; i < len; i++ ) {
+    var img = images[i];
+    img.ondragstart = noDragStart;
+  }
+};
+
+// ----- start event ----- //
+
+/**
+ * pointer start
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ */
+Unidragger.prototype.pointerDown = function( event, pointer ) {
+  // dismiss range sliders
+  if ( event.target.nodeName == 'INPUT' && event.target.type == 'range' ) {
+    // reset pointerDown logic
+    this.isPointerDown = false;
+    delete this.pointerIdentifier;
+    return;
+  }
+
+  this._dragPointerDown( event, pointer );
+  // kludge to blur focused inputs in dragger
+  var focused = document.activeElement;
+  if ( focused && focused.blur ) {
+    focused.blur();
+  }
+  // bind move and end events
+  this._bindPostStartEvents( event );
+  // track scrolling
+  this.pointerDownScroll = Unidragger.getScrollPosition();
+  eventie.bind( window, 'scroll', this );
+
+  this.emitEvent( 'pointerDown', [ event, pointer ] );
+};
+
+// base pointer down logic
+Unidragger.prototype._dragPointerDown = function( event, pointer ) {
+  // track to see when dragging starts
+  this.pointerDownPoint = Unipointer.getPointerPoint( pointer );
+
+  // prevent default, unless touchstart or <select>
+  var isTouchstart = event.type == 'touchstart';
+  var targetNodeName = event.target.nodeName;
+  if ( !isTouchstart && targetNodeName != 'SELECT' ) {
+    preventDefaultEvent( event );
+  }
+};
+
+// ----- move event ----- //
+
+/**
+ * drag move
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ */
+Unidragger.prototype.pointerMove = function( event, pointer ) {
+  var moveVector = this._dragPointerMove( event, pointer );
+  this.emitEvent( 'pointerMove', [ event, pointer, moveVector ] );
+  this._dragMove( event, pointer, moveVector );
+};
+
+// base pointer move logic
+Unidragger.prototype._dragPointerMove = function( event, pointer ) {
+  var movePoint = Unipointer.getPointerPoint( pointer );
+  var moveVector = {
+    x: movePoint.x - this.pointerDownPoint.x,
+    y: movePoint.y - this.pointerDownPoint.y
   };
-  // try making plugin
-  ImagesLoaded.makeJQueryPlugin();
+  // start drag if pointer has moved far enough to start drag
+  if ( !this.isDragging && this.hasDragStarted( moveVector ) ) {
+    this._dragStart( event, pointer );
+  }
+  return moveVector;
+};
 
-  // --------------------------  -------------------------- //
+// condition if pointer has moved far enough to start drag
+Unidragger.prototype.hasDragStarted = function( moveVector ) {
+  return Math.abs( moveVector.x ) > 3 || Math.abs( moveVector.y ) > 3;
+};
 
-  return ImagesLoaded;
 
-});
+// ----- end event ----- //
 
-},{"eventie":6,"wolfy87-eventemitter":26}],21:[function(require,module,exports){
+/**
+ * pointer up
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ */
+Unidragger.prototype.pointerUp = function( event, pointer ) {
+  this.emitEvent( 'pointerUp', [ event, pointer ] );
+  this._dragPointerUp( event, pointer );
+};
+
+Unidragger.prototype._dragPointerUp = function( event, pointer ) {
+  if ( this.isDragging ) {
+    this._dragEnd( event, pointer );
+  } else {
+    // pointer didn't move enough for drag to start
+    this._staticClick( event, pointer );
+  }
+};
+
+Unipointer.prototype.pointerDone = function() {
+  eventie.unbind( window, 'scroll', this );
+};
+
+// -------------------------- drag -------------------------- //
+
+// dragStart
+Unidragger.prototype._dragStart = function( event, pointer ) {
+  this.isDragging = true;
+  this.dragStartPoint = Unidragger.getPointerPoint( pointer );
+  // prevent clicks
+  this.isPreventingClicks = true;
+
+  this.dragStart( event, pointer );
+};
+
+Unidragger.prototype.dragStart = function( event, pointer ) {
+  this.emitEvent( 'dragStart', [ event, pointer ] );
+};
+
+// dragMove
+Unidragger.prototype._dragMove = function( event, pointer, moveVector ) {
+  // do not drag if not dragging yet
+  if ( !this.isDragging ) {
+    return;
+  }
+
+  this.dragMove( event, pointer, moveVector );
+};
+
+Unidragger.prototype.dragMove = function( event, pointer, moveVector ) {
+  preventDefaultEvent( event );
+  this.emitEvent( 'dragMove', [ event, pointer, moveVector ] );
+};
+
+// dragEnd
+Unidragger.prototype._dragEnd = function( event, pointer ) {
+  // set flags
+  this.isDragging = false;
+  // re-enable clicking async
+  var _this = this;
+  setTimeout( function() {
+    delete _this.isPreventingClicks;
+  });
+
+  this.dragEnd( event, pointer );
+};
+
+Unidragger.prototype.dragEnd = function( event, pointer ) {
+  this.emitEvent( 'dragEnd', [ event, pointer ] );
+};
+
+Unidragger.prototype.pointerDone = function() {
+  eventie.unbind( window, 'scroll', this );
+  delete this.pointerDownScroll;
+};
+
+// ----- onclick ----- //
+
+// handle all clicks and prevent clicks when dragging
+Unidragger.prototype.onclick = function( event ) {
+  if ( this.isPreventingClicks ) {
+    preventDefaultEvent( event );
+  }
+};
+
+// ----- staticClick ----- //
+
+// triggered after pointer down & up with no/tiny movement
+Unidragger.prototype._staticClick = function( event, pointer ) {
+  // ignore emulated mouse up clicks
+  if ( this.isIgnoringMouseUp && event.type == 'mouseup' ) {
+    return;
+  }
+
+  // allow click in <input>s and <textarea>s
+  var nodeName = event.target.nodeName;
+  if ( nodeName == 'INPUT' || nodeName == 'TEXTAREA' ) {
+    event.target.focus();
+  }
+  this.staticClick( event, pointer );
+
+  // set flag for emulated clicks 300ms after touchend
+  if ( event.type != 'mouseup' ) {
+    this.isIgnoringMouseUp = true;
+    var _this = this;
+    // reset flag after 300ms
+    setTimeout( function() {
+      delete _this.isIgnoringMouseUp;
+    }, 400 );
+  }
+};
+
+Unidragger.prototype.staticClick = function( event, pointer ) {
+  this.emitEvent( 'staticClick', [ event, pointer ] );
+};
+
+// ----- scroll ----- //
+
+Unidragger.prototype.onscroll = function() {
+  var scroll = Unidragger.getScrollPosition();
+  var scrollMoveX = this.pointerDownScroll.x - scroll.x;
+  var scrollMoveY = this.pointerDownScroll.y - scroll.y;
+  // cancel click/tap if scroll is too much
+  if ( Math.abs( scrollMoveX ) > 3 || Math.abs( scrollMoveY ) > 3 ) {
+    this._pointerDone();
+  }
+};
+
+// ----- utils ----- //
+
+Unidragger.getPointerPoint = function( pointer ) {
+  return {
+    x: pointer.pageX !== undefined ? pointer.pageX : pointer.clientX,
+    y: pointer.pageY !== undefined ? pointer.pageY : pointer.clientY
+  };
+};
+
+var isPageOffset = window.pageYOffset !== undefined;
+
+// get scroll in { x, y }
+Unidragger.getScrollPosition = function() {
+  return {
+    x: isPageOffset ? window.pageXOffset : document.body.scrollLeft,
+    y: isPageOffset ? window.pageYOffset : document.body.scrollTop
+  };
+};
+
+// -----  ----- //
+
+Unidragger.getPointerPoint = Unipointer.getPointerPoint;
+
+return Unidragger;
+
+}));
+
+},{"eventie":20,"unipointer":25}],27:[function(require,module,exports){
+/*!
+ * EventEmitter v4.2.11 - git.io/ee
+ * Unlicense - http://unlicense.org/
+ * Oliver Caldwell - http://oli.me.uk/
+ * @preserve
+ */
+
+;(function () {
+    'use strict';
+
+    /**
+     * Class for managing events.
+     * Can be extended to provide event functionality in other classes.
+     *
+     * @class EventEmitter Manages event registering and emitting.
+     */
+    function EventEmitter() {}
+
+    // Shortcuts to improve speed and size
+    var proto = EventEmitter.prototype;
+    var exports = this;
+    var originalGlobalValue = exports.EventEmitter;
+
+    /**
+     * Finds the index of the listener for the event in its storage array.
+     *
+     * @param {Function[]} listeners Array of listeners to search through.
+     * @param {Function} listener Method to look for.
+     * @return {Number} Index of the specified listener, -1 if not found
+     * @api private
+     */
+    function indexOfListener(listeners, listener) {
+        var i = listeners.length;
+        while (i--) {
+            if (listeners[i].listener === listener) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * Alias a method while keeping the context correct, to allow for overwriting of target method.
+     *
+     * @param {String} name The name of the target method.
+     * @return {Function} The aliased method
+     * @api private
+     */
+    function alias(name) {
+        return function aliasClosure() {
+            return this[name].apply(this, arguments);
+        };
+    }
+
+    /**
+     * Returns the listener array for the specified event.
+     * Will initialise the event object and listener arrays if required.
+     * Will return an object if you use a regex search. The object contains keys for each matched event. So /ba[rz]/ might return an object containing bar and baz. But only if you have either defined them with defineEvent or added some listeners to them.
+     * Each property in the object response is an array of listener functions.
+     *
+     * @param {String|RegExp} evt Name of the event to return the listeners from.
+     * @return {Function[]|Object} All listener functions for the event.
+     */
+    proto.getListeners = function getListeners(evt) {
+        var events = this._getEvents();
+        var response;
+        var key;
+
+        // Return a concatenated array of all matching events if
+        // the selector is a regular expression.
+        if (evt instanceof RegExp) {
+            response = {};
+            for (key in events) {
+                if (events.hasOwnProperty(key) && evt.test(key)) {
+                    response[key] = events[key];
+                }
+            }
+        }
+        else {
+            response = events[evt] || (events[evt] = []);
+        }
+
+        return response;
+    };
+
+    /**
+     * Takes a list of listener objects and flattens it into a list of listener functions.
+     *
+     * @param {Object[]} listeners Raw listener objects.
+     * @return {Function[]} Just the listener functions.
+     */
+    proto.flattenListeners = function flattenListeners(listeners) {
+        var flatListeners = [];
+        var i;
+
+        for (i = 0; i < listeners.length; i += 1) {
+            flatListeners.push(listeners[i].listener);
+        }
+
+        return flatListeners;
+    };
+
+    /**
+     * Fetches the requested listeners via getListeners but will always return the results inside an object. This is mainly for internal use but others may find it useful.
+     *
+     * @param {String|RegExp} evt Name of the event to return the listeners from.
+     * @return {Object} All listener functions for an event in an object.
+     */
+    proto.getListenersAsObject = function getListenersAsObject(evt) {
+        var listeners = this.getListeners(evt);
+        var response;
+
+        if (listeners instanceof Array) {
+            response = {};
+            response[evt] = listeners;
+        }
+
+        return response || listeners;
+    };
+
+    /**
+     * Adds a listener function to the specified event.
+     * The listener will not be added if it is a duplicate.
+     * If the listener returns true then it will be removed after it is called.
+     * If you pass a regular expression as the event name then the listener will be added to all events that match it.
+     *
+     * @param {String|RegExp} evt Name of the event to attach the listener to.
+     * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.addListener = function addListener(evt, listener) {
+        var listeners = this.getListenersAsObject(evt);
+        var listenerIsWrapped = typeof listener === 'object';
+        var key;
+
+        for (key in listeners) {
+            if (listeners.hasOwnProperty(key) && indexOfListener(listeners[key], listener) === -1) {
+                listeners[key].push(listenerIsWrapped ? listener : {
+                    listener: listener,
+                    once: false
+                });
+            }
+        }
+
+        return this;
+    };
+
+    /**
+     * Alias of addListener
+     */
+    proto.on = alias('addListener');
+
+    /**
+     * Semi-alias of addListener. It will add a listener that will be
+     * automatically removed after its first execution.
+     *
+     * @param {String|RegExp} evt Name of the event to attach the listener to.
+     * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.addOnceListener = function addOnceListener(evt, listener) {
+        return this.addListener(evt, {
+            listener: listener,
+            once: true
+        });
+    };
+
+    /**
+     * Alias of addOnceListener.
+     */
+    proto.once = alias('addOnceListener');
+
+    /**
+     * Defines an event name. This is required if you want to use a regex to add a listener to multiple events at once. If you don't do this then how do you expect it to know what event to add to? Should it just add to every possible match for a regex? No. That is scary and bad.
+     * You need to tell it what event names should be matched by a regex.
+     *
+     * @param {String} evt Name of the event to create.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.defineEvent = function defineEvent(evt) {
+        this.getListeners(evt);
+        return this;
+    };
+
+    /**
+     * Uses defineEvent to define multiple events.
+     *
+     * @param {String[]} evts An array of event names to define.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.defineEvents = function defineEvents(evts) {
+        for (var i = 0; i < evts.length; i += 1) {
+            this.defineEvent(evts[i]);
+        }
+        return this;
+    };
+
+    /**
+     * Removes a listener function from the specified event.
+     * When passed a regular expression as the event name, it will remove the listener from all events that match it.
+     *
+     * @param {String|RegExp} evt Name of the event to remove the listener from.
+     * @param {Function} listener Method to remove from the event.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.removeListener = function removeListener(evt, listener) {
+        var listeners = this.getListenersAsObject(evt);
+        var index;
+        var key;
+
+        for (key in listeners) {
+            if (listeners.hasOwnProperty(key)) {
+                index = indexOfListener(listeners[key], listener);
+
+                if (index !== -1) {
+                    listeners[key].splice(index, 1);
+                }
+            }
+        }
+
+        return this;
+    };
+
+    /**
+     * Alias of removeListener
+     */
+    proto.off = alias('removeListener');
+
+    /**
+     * Adds listeners in bulk using the manipulateListeners method.
+     * If you pass an object as the second argument you can add to multiple events at once. The object should contain key value pairs of events and listeners or listener arrays. You can also pass it an event name and an array of listeners to be added.
+     * You can also pass it a regular expression to add the array of listeners to all events that match it.
+     * Yeah, this function does quite a bit. That's probably a bad thing.
+     *
+     * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add to multiple events at once.
+     * @param {Function[]} [listeners] An optional array of listener functions to add.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.addListeners = function addListeners(evt, listeners) {
+        // Pass through to manipulateListeners
+        return this.manipulateListeners(false, evt, listeners);
+    };
+
+    /**
+     * Removes listeners in bulk using the manipulateListeners method.
+     * If you pass an object as the second argument you can remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
+     * You can also pass it an event name and an array of listeners to be removed.
+     * You can also pass it a regular expression to remove the listeners from all events that match it.
+     *
+     * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to remove from multiple events at once.
+     * @param {Function[]} [listeners] An optional array of listener functions to remove.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.removeListeners = function removeListeners(evt, listeners) {
+        // Pass through to manipulateListeners
+        return this.manipulateListeners(true, evt, listeners);
+    };
+
+    /**
+     * Edits listeners in bulk. The addListeners and removeListeners methods both use this to do their job. You should really use those instead, this is a little lower level.
+     * The first argument will determine if the listeners are removed (true) or added (false).
+     * If you pass an object as the second argument you can add/remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
+     * You can also pass it an event name and an array of listeners to be added/removed.
+     * You can also pass it a regular expression to manipulate the listeners of all events that match it.
+     *
+     * @param {Boolean} remove True if you want to remove listeners, false if you want to add.
+     * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add/remove from multiple events at once.
+     * @param {Function[]} [listeners] An optional array of listener functions to add/remove.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.manipulateListeners = function manipulateListeners(remove, evt, listeners) {
+        var i;
+        var value;
+        var single = remove ? this.removeListener : this.addListener;
+        var multiple = remove ? this.removeListeners : this.addListeners;
+
+        // If evt is an object then pass each of its properties to this method
+        if (typeof evt === 'object' && !(evt instanceof RegExp)) {
+            for (i in evt) {
+                if (evt.hasOwnProperty(i) && (value = evt[i])) {
+                    // Pass the single listener straight through to the singular method
+                    if (typeof value === 'function') {
+                        single.call(this, i, value);
+                    }
+                    else {
+                        // Otherwise pass back to the multiple function
+                        multiple.call(this, i, value);
+                    }
+                }
+            }
+        }
+        else {
+            // So evt must be a string
+            // And listeners must be an array of listeners
+            // Loop over it and pass each one to the multiple method
+            i = listeners.length;
+            while (i--) {
+                single.call(this, evt, listeners[i]);
+            }
+        }
+
+        return this;
+    };
+
+    /**
+     * Removes all listeners from a specified event.
+     * If you do not specify an event then all listeners will be removed.
+     * That means every event will be emptied.
+     * You can also pass a regex to remove all events that match it.
+     *
+     * @param {String|RegExp} [evt] Optional name of the event to remove all listeners for. Will remove from every event if not passed.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.removeEvent = function removeEvent(evt) {
+        var type = typeof evt;
+        var events = this._getEvents();
+        var key;
+
+        // Remove different things depending on the state of evt
+        if (type === 'string') {
+            // Remove all listeners for the specified event
+            delete events[evt];
+        }
+        else if (evt instanceof RegExp) {
+            // Remove all events matching the regex.
+            for (key in events) {
+                if (events.hasOwnProperty(key) && evt.test(key)) {
+                    delete events[key];
+                }
+            }
+        }
+        else {
+            // Remove all listeners in all events
+            delete this._events;
+        }
+
+        return this;
+    };
+
+    /**
+     * Alias of removeEvent.
+     *
+     * Added to mirror the node API.
+     */
+    proto.removeAllListeners = alias('removeEvent');
+
+    /**
+     * Emits an event of your choice.
+     * When emitted, every listener attached to that event will be executed.
+     * If you pass the optional argument array then those arguments will be passed to every listener upon execution.
+     * Because it uses `apply`, your array of arguments will be passed as if you wrote them out separately.
+     * So they will not arrive within the array on the other side, they will be separate.
+     * You can also pass a regular expression to emit to all events that match it.
+     *
+     * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
+     * @param {Array} [args] Optional array of arguments to be passed to each listener.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.emitEvent = function emitEvent(evt, args) {
+        var listeners = this.getListenersAsObject(evt);
+        var listener;
+        var i;
+        var key;
+        var response;
+
+        for (key in listeners) {
+            if (listeners.hasOwnProperty(key)) {
+                i = listeners[key].length;
+
+                while (i--) {
+                    // If the listener returns true then it shall be removed from the event
+                    // The function is executed either with a basic call or an apply if there is an args array
+                    listener = listeners[key][i];
+
+                    if (listener.once === true) {
+                        this.removeListener(evt, listener.listener);
+                    }
+
+                    response = listener.listener.apply(this, args || []);
+
+                    if (response === this._getOnceReturnValue()) {
+                        this.removeListener(evt, listener.listener);
+                    }
+                }
+            }
+        }
+
+        return this;
+    };
+
+    /**
+     * Alias of emitEvent
+     */
+    proto.trigger = alias('emitEvent');
+
+    /**
+     * Subtly different from emitEvent in that it will pass its arguments on to the listeners, as opposed to taking a single array of arguments to pass on.
+     * As with emitEvent, you can pass a regex in place of the event name to emit to all events that match it.
+     *
+     * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
+     * @param {...*} Optional additional arguments to be passed to each listener.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.emit = function emit(evt) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        return this.emitEvent(evt, args);
+    };
+
+    /**
+     * Sets the current value to check against when executing listeners. If a
+     * listeners return value matches the one set here then it will be removed
+     * after execution. This value defaults to true.
+     *
+     * @param {*} value The new value to check for when executing listeners.
+     * @return {Object} Current instance of EventEmitter for chaining.
+     */
+    proto.setOnceReturnValue = function setOnceReturnValue(value) {
+        this._onceReturnValue = value;
+        return this;
+    };
+
+    /**
+     * Fetches the current value to check against when executing listeners. If
+     * the listeners return value matches this one then it should be removed
+     * automatically. It will return true by default.
+     *
+     * @return {*|Boolean} The current value to check for or the default, true.
+     * @api private
+     */
+    proto._getOnceReturnValue = function _getOnceReturnValue() {
+        if (this.hasOwnProperty('_onceReturnValue')) {
+            return this._onceReturnValue;
+        }
+        else {
+            return true;
+        }
+    };
+
+    /**
+     * Fetches the events object and creates one if required.
+     *
+     * @return {Object} The events storage object.
+     * @api private
+     */
+    proto._getEvents = function _getEvents() {
+        return this._events || (this._events = {});
+    };
+
+    /**
+     * Reverts the global {@link EventEmitter} to its previous value and returns a reference to this version.
+     *
+     * @return {Function} Non conflicting EventEmitter class.
+     */
+    EventEmitter.noConflict = function noConflict() {
+        exports.EventEmitter = originalGlobalValue;
+        return EventEmitter;
+    };
+
+    // Expose the class either via AMD, CommonJS or the global object
+    if (typeof define === 'function' && define.amd) {
+        define(function () {
+            return EventEmitter;
+        });
+    }
+    else if (typeof module === 'object' && module.exports){
+        module.exports = EventEmitter;
+    }
+    else {
+        exports.EventEmitter = EventEmitter;
+    }
+}.call(this));
+
+},{}],28:[function(require,module,exports){
 /**
  * Bridget makes jQuery widgets
  * v1.1.0
@@ -4098,7 +5854,7 @@ if ( typeof define === 'function' && define.amd ) {
 
 })( window );
 
-},{"jquery":22}],22:[function(require,module,exports){
+},{"jquery":29}],29:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.4
  * http://jquery.com/
@@ -13913,1281 +15669,5 @@ if ( !noGlobal ) {
 
 return jQuery;
 }));
-
-},{}],23:[function(require,module,exports){
-/*!
- * Tap listener v1.1.2
- * listens to taps
- * MIT license
- */
-
-/*jshint browser: true, unused: true, undef: true, strict: true */
-
-( function( window, factory ) {
-  // universal module definition
-  /*jshint strict: false*/ /*globals define, module, require */
-
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( [
-      'unipointer/unipointer'
-    ], function( Unipointer ) {
-      return factory( window, Unipointer );
-    });
-  } else if ( typeof exports == 'object' ) {
-    // CommonJS
-    module.exports = factory(
-      window,
-      require('unipointer')
-    );
-  } else {
-    // browser global
-    window.TapListener = factory(
-      window,
-      window.Unipointer
-    );
-  }
-
-}( window, function factory( window, Unipointer ) {
-
-'use strict';
-
-// --------------------------  TapListener -------------------------- //
-
-function TapListener( elem ) {
-  this.bindTap( elem );
-}
-
-// inherit Unipointer & EventEmitter
-TapListener.prototype = new Unipointer();
-
-/**
- * bind tap event to element
- * @param {Element} elem
- */
-TapListener.prototype.bindTap = function( elem ) {
-  if ( !elem ) {
-    return;
-  }
-  this.unbindTap();
-  this.tapElement = elem;
-  this._bindStartEvent( elem, true );
-};
-
-TapListener.prototype.unbindTap = function() {
-  if ( !this.tapElement ) {
-    return;
-  }
-  this._bindStartEvent( this.tapElement, true );
-  delete this.tapElement;
-};
-
-var isPageOffset = window.pageYOffset !== undefined;
-/**
- * pointer up
- * @param {Event} event
- * @param {Event or Touch} pointer
- */
-TapListener.prototype.pointerUp = function( event, pointer ) {
-  // ignore emulated mouse up clicks
-  if ( this.isIgnoringMouseUp && event.type == 'mouseup' ) {
-    return;
-  }
-
-  var pointerPoint = Unipointer.getPointerPoint( pointer );
-  var boundingRect = this.tapElement.getBoundingClientRect();
-  // standard or IE8 scroll positions
-  var scrollX = isPageOffset ? window.pageXOffset : document.body.scrollLeft;
-  var scrollY = isPageOffset ? window.pageYOffset : document.body.scrollTop;
-  // calculate if pointer is inside tapElement
-  var isInside = pointerPoint.x >= boundingRect.left + scrollX &&
-    pointerPoint.x <= boundingRect.right + scrollX &&
-    pointerPoint.y >= boundingRect.top + scrollY &&
-    pointerPoint.y <= boundingRect.bottom + scrollY;
-  // trigger callback if pointer is inside element
-  if ( isInside ) {
-    this.emitEvent( 'tap', [ event, pointer ] );
-  }
-
-  // set flag for emulated clicks 300ms after touchend
-  if ( event.type != 'mouseup' ) {
-    this.isIgnoringMouseUp = true;
-    // reset flag after 300ms
-    setTimeout( function() {
-      delete this.isIgnoringMouseUp;
-    }.bind( this ), 320 );
-  }
-};
-
-TapListener.prototype.destroy = function() {
-  this.pointerDone();
-  this.unbindTap();
-};
-
-// -----  ----- //
-
-return TapListener;
-
-}));
-
-},{"unipointer":25}],24:[function(require,module,exports){
-/*!
- * Unidragger v1.1.5
- * Draggable base class
- * MIT license
- */
-
-/*jshint browser: true, unused: true, undef: true, strict: true */
-
-( function( window, factory ) {
-  /*global define: false, module: false, require: false */
-  'use strict';
-  // universal module definition
-
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( [
-      'eventie/eventie',
-      'unipointer/unipointer'
-    ], function( eventie, Unipointer ) {
-      return factory( window, eventie, Unipointer );
-    });
-  } else if ( typeof exports == 'object' ) {
-    // CommonJS
-    module.exports = factory(
-      window,
-      require('eventie'),
-      require('unipointer')
-    );
-  } else {
-    // browser global
-    window.Unidragger = factory(
-      window,
-      window.eventie,
-      window.Unipointer
-    );
-  }
-
-}( window, function factory( window, eventie, Unipointer ) {
-
-'use strict';
-
-// -----  ----- //
-
-function noop() {}
-
-// handle IE8 prevent default
-function preventDefaultEvent( event ) {
-  if ( event.preventDefault ) {
-    event.preventDefault();
-  } else {
-    event.returnValue = false;
-  }
-}
-
-// -------------------------- Unidragger -------------------------- //
-
-function Unidragger() {}
-
-// inherit Unipointer & EventEmitter
-Unidragger.prototype = new Unipointer();
-
-// ----- bind start ----- //
-
-Unidragger.prototype.bindHandles = function() {
-  this._bindHandles( true );
-};
-
-Unidragger.prototype.unbindHandles = function() {
-  this._bindHandles( false );
-};
-
-var navigator = window.navigator;
-/**
- * works as unbinder, as you can .bindHandles( false ) to unbind
- * @param {Boolean} isBind - will unbind if falsey
- */
-Unidragger.prototype._bindHandles = function( isBind ) {
-  // munge isBind, default to true
-  isBind = isBind === undefined ? true : !!isBind;
-  // extra bind logic
-  var binderExtra;
-  if ( navigator.pointerEnabled ) {
-    binderExtra = function( handle ) {
-      // disable scrolling on the element
-      handle.style.touchAction = isBind ? 'none' : '';
-    };
-  } else if ( navigator.msPointerEnabled ) {
-    binderExtra = function( handle ) {
-      // disable scrolling on the element
-      handle.style.msTouchAction = isBind ? 'none' : '';
-    };
-  } else {
-    binderExtra = function() {
-      // TODO re-enable img.ondragstart when unbinding
-      if ( isBind ) {
-        disableImgOndragstart( handle );
-      }
-    };
-  }
-  // bind each handle
-  var bindMethod = isBind ? 'bind' : 'unbind';
-  for ( var i=0, len = this.handles.length; i < len; i++ ) {
-    var handle = this.handles[i];
-    this._bindStartEvent( handle, isBind );
-    binderExtra( handle );
-    eventie[ bindMethod ]( handle, 'click', this );
-  }
-};
-
-// remove default dragging interaction on all images in IE8
-// IE8 does its own drag thing on images, which messes stuff up
-
-function noDragStart() {
-  return false;
-}
-
-// TODO replace this with a IE8 test
-var isIE8 = 'attachEvent' in document.documentElement;
-
-// IE8 only
-var disableImgOndragstart = !isIE8 ? noop : function( handle ) {
-
-  if ( handle.nodeName == 'IMG' ) {
-    handle.ondragstart = noDragStart;
-  }
-
-  var images = handle.querySelectorAll('img');
-  for ( var i=0, len = images.length; i < len; i++ ) {
-    var img = images[i];
-    img.ondragstart = noDragStart;
-  }
-};
-
-// ----- start event ----- //
-
-/**
- * pointer start
- * @param {Event} event
- * @param {Event or Touch} pointer
- */
-Unidragger.prototype.pointerDown = function( event, pointer ) {
-  // dismiss range sliders
-  if ( event.target.nodeName == 'INPUT' && event.target.type == 'range' ) {
-    // reset pointerDown logic
-    this.isPointerDown = false;
-    delete this.pointerIdentifier;
-    return;
-  }
-
-  this._dragPointerDown( event, pointer );
-  // kludge to blur focused inputs in dragger
-  var focused = document.activeElement;
-  if ( focused && focused.blur ) {
-    focused.blur();
-  }
-  // bind move and end events
-  this._bindPostStartEvents( event );
-  // track scrolling
-  this.pointerDownScroll = Unidragger.getScrollPosition();
-  eventie.bind( window, 'scroll', this );
-
-  this.emitEvent( 'pointerDown', [ event, pointer ] );
-};
-
-// base pointer down logic
-Unidragger.prototype._dragPointerDown = function( event, pointer ) {
-  // track to see when dragging starts
-  this.pointerDownPoint = Unipointer.getPointerPoint( pointer );
-
-  // prevent default, unless touchstart or <select>
-  var isTouchstart = event.type == 'touchstart';
-  var targetNodeName = event.target.nodeName;
-  if ( !isTouchstart && targetNodeName != 'SELECT' ) {
-    preventDefaultEvent( event );
-  }
-};
-
-// ----- move event ----- //
-
-/**
- * drag move
- * @param {Event} event
- * @param {Event or Touch} pointer
- */
-Unidragger.prototype.pointerMove = function( event, pointer ) {
-  var moveVector = this._dragPointerMove( event, pointer );
-  this.emitEvent( 'pointerMove', [ event, pointer, moveVector ] );
-  this._dragMove( event, pointer, moveVector );
-};
-
-// base pointer move logic
-Unidragger.prototype._dragPointerMove = function( event, pointer ) {
-  var movePoint = Unipointer.getPointerPoint( pointer );
-  var moveVector = {
-    x: movePoint.x - this.pointerDownPoint.x,
-    y: movePoint.y - this.pointerDownPoint.y
-  };
-  // start drag if pointer has moved far enough to start drag
-  if ( !this.isDragging && this.hasDragStarted( moveVector ) ) {
-    this._dragStart( event, pointer );
-  }
-  return moveVector;
-};
-
-// condition if pointer has moved far enough to start drag
-Unidragger.prototype.hasDragStarted = function( moveVector ) {
-  return Math.abs( moveVector.x ) > 3 || Math.abs( moveVector.y ) > 3;
-};
-
-
-// ----- end event ----- //
-
-/**
- * pointer up
- * @param {Event} event
- * @param {Event or Touch} pointer
- */
-Unidragger.prototype.pointerUp = function( event, pointer ) {
-  this.emitEvent( 'pointerUp', [ event, pointer ] );
-  this._dragPointerUp( event, pointer );
-};
-
-Unidragger.prototype._dragPointerUp = function( event, pointer ) {
-  if ( this.isDragging ) {
-    this._dragEnd( event, pointer );
-  } else {
-    // pointer didn't move enough for drag to start
-    this._staticClick( event, pointer );
-  }
-};
-
-Unipointer.prototype.pointerDone = function() {
-  eventie.unbind( window, 'scroll', this );
-};
-
-// -------------------------- drag -------------------------- //
-
-// dragStart
-Unidragger.prototype._dragStart = function( event, pointer ) {
-  this.isDragging = true;
-  this.dragStartPoint = Unidragger.getPointerPoint( pointer );
-  // prevent clicks
-  this.isPreventingClicks = true;
-
-  this.dragStart( event, pointer );
-};
-
-Unidragger.prototype.dragStart = function( event, pointer ) {
-  this.emitEvent( 'dragStart', [ event, pointer ] );
-};
-
-// dragMove
-Unidragger.prototype._dragMove = function( event, pointer, moveVector ) {
-  // do not drag if not dragging yet
-  if ( !this.isDragging ) {
-    return;
-  }
-
-  this.dragMove( event, pointer, moveVector );
-};
-
-Unidragger.prototype.dragMove = function( event, pointer, moveVector ) {
-  preventDefaultEvent( event );
-  this.emitEvent( 'dragMove', [ event, pointer, moveVector ] );
-};
-
-// dragEnd
-Unidragger.prototype._dragEnd = function( event, pointer ) {
-  // set flags
-  this.isDragging = false;
-  // re-enable clicking async
-  var _this = this;
-  setTimeout( function() {
-    delete _this.isPreventingClicks;
-  });
-
-  this.dragEnd( event, pointer );
-};
-
-Unidragger.prototype.dragEnd = function( event, pointer ) {
-  this.emitEvent( 'dragEnd', [ event, pointer ] );
-};
-
-Unidragger.prototype.pointerDone = function() {
-  eventie.unbind( window, 'scroll', this );
-  delete this.pointerDownScroll;
-};
-
-// ----- onclick ----- //
-
-// handle all clicks and prevent clicks when dragging
-Unidragger.prototype.onclick = function( event ) {
-  if ( this.isPreventingClicks ) {
-    preventDefaultEvent( event );
-  }
-};
-
-// ----- staticClick ----- //
-
-// triggered after pointer down & up with no/tiny movement
-Unidragger.prototype._staticClick = function( event, pointer ) {
-  // ignore emulated mouse up clicks
-  if ( this.isIgnoringMouseUp && event.type == 'mouseup' ) {
-    return;
-  }
-
-  // allow click in <input>s and <textarea>s
-  var nodeName = event.target.nodeName;
-  if ( nodeName == 'INPUT' || nodeName == 'TEXTAREA' ) {
-    event.target.focus();
-  }
-  this.staticClick( event, pointer );
-
-  // set flag for emulated clicks 300ms after touchend
-  if ( event.type != 'mouseup' ) {
-    this.isIgnoringMouseUp = true;
-    var _this = this;
-    // reset flag after 300ms
-    setTimeout( function() {
-      delete _this.isIgnoringMouseUp;
-    }, 400 );
-  }
-};
-
-Unidragger.prototype.staticClick = function( event, pointer ) {
-  this.emitEvent( 'staticClick', [ event, pointer ] );
-};
-
-// ----- scroll ----- //
-
-Unidragger.prototype.onscroll = function() {
-  var scroll = Unidragger.getScrollPosition();
-  var scrollMoveX = this.pointerDownScroll.x - scroll.x;
-  var scrollMoveY = this.pointerDownScroll.y - scroll.y;
-  // cancel click/tap if scroll is too much
-  if ( Math.abs( scrollMoveX ) > 3 || Math.abs( scrollMoveY ) > 3 ) {
-    this._pointerDone();
-  }
-};
-
-// ----- utils ----- //
-
-Unidragger.getPointerPoint = function( pointer ) {
-  return {
-    x: pointer.pageX !== undefined ? pointer.pageX : pointer.clientX,
-    y: pointer.pageY !== undefined ? pointer.pageY : pointer.clientY
-  };
-};
-
-var isPageOffset = window.pageYOffset !== undefined;
-
-// get scroll in { x, y }
-Unidragger.getScrollPosition = function() {
-  return {
-    x: isPageOffset ? window.pageXOffset : document.body.scrollLeft,
-    y: isPageOffset ? window.pageYOffset : document.body.scrollTop
-  };
-};
-
-// -----  ----- //
-
-Unidragger.getPointerPoint = Unipointer.getPointerPoint;
-
-return Unidragger;
-
-}));
-
-},{"eventie":6,"unipointer":25}],25:[function(require,module,exports){
-/*!
- * Unipointer v1.1.0
- * base class for doing one thing with pointer event
- * MIT license
- */
-
-/*jshint browser: true, undef: true, unused: true, strict: true */
-/*global define: false, module: false, require: false */
-
-( function( window, factory ) {
-  'use strict';
-  // universal module definition
-
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( [
-      'eventEmitter/EventEmitter',
-      'eventie/eventie'
-    ], function( EventEmitter, eventie ) {
-      return factory( window, EventEmitter, eventie );
-    });
-  } else if ( typeof exports == 'object' ) {
-    // CommonJS
-    module.exports = factory(
-      window,
-      require('wolfy87-eventemitter'),
-      require('eventie')
-    );
-  } else {
-    // browser global
-    window.Unipointer = factory(
-      window,
-      window.EventEmitter,
-      window.eventie
-    );
-  }
-
-}( window, function factory( window, EventEmitter, eventie ) {
-
-'use strict';
-
-function noop() {}
-
-function Unipointer() {}
-
-// inherit EventEmitter
-Unipointer.prototype = new EventEmitter();
-
-Unipointer.prototype.bindStartEvent = function( elem ) {
-  this._bindStartEvent( elem, true );
-};
-
-Unipointer.prototype.unbindStartEvent = function( elem ) {
-  this._bindStartEvent( elem, false );
-};
-
-/**
- * works as unbinder, as you can ._bindStart( false ) to unbind
- * @param {Boolean} isBind - will unbind if falsey
- */
-Unipointer.prototype._bindStartEvent = function( elem, isBind ) {
-  // munge isBind, default to true
-  isBind = isBind === undefined ? true : !!isBind;
-  var bindMethod = isBind ? 'bind' : 'unbind';
-
-  if ( window.navigator.pointerEnabled ) {
-    // W3C Pointer Events, IE11. See https://coderwall.com/p/mfreca
-    eventie[ bindMethod ]( elem, 'pointerdown', this );
-  } else if ( window.navigator.msPointerEnabled ) {
-    // IE10 Pointer Events
-    eventie[ bindMethod ]( elem, 'MSPointerDown', this );
-  } else {
-    // listen for both, for devices like Chrome Pixel
-    eventie[ bindMethod ]( elem, 'mousedown', this );
-    eventie[ bindMethod ]( elem, 'touchstart', this );
-  }
-};
-
-// trigger handler methods for events
-Unipointer.prototype.handleEvent = function( event ) {
-  var method = 'on' + event.type;
-  if ( this[ method ] ) {
-    this[ method ]( event );
-  }
-};
-
-// returns the touch that we're keeping track of
-Unipointer.prototype.getTouch = function( touches ) {
-  for ( var i=0, len = touches.length; i < len; i++ ) {
-    var touch = touches[i];
-    if ( touch.identifier == this.pointerIdentifier ) {
-      return touch;
-    }
-  }
-};
-
-// ----- start event ----- //
-
-Unipointer.prototype.onmousedown = function( event ) {
-  // dismiss clicks from right or middle buttons
-  var button = event.button;
-  if ( button && ( button !== 0 && button !== 1 ) ) {
-    return;
-  }
-  this._pointerDown( event, event );
-};
-
-Unipointer.prototype.ontouchstart = function( event ) {
-  this._pointerDown( event, event.changedTouches[0] );
-};
-
-Unipointer.prototype.onMSPointerDown =
-Unipointer.prototype.onpointerdown = function( event ) {
-  this._pointerDown( event, event );
-};
-
-/**
- * pointer start
- * @param {Event} event
- * @param {Event or Touch} pointer
- */
-Unipointer.prototype._pointerDown = function( event, pointer ) {
-  // dismiss other pointers
-  if ( this.isPointerDown ) {
-    return;
-  }
-
-  this.isPointerDown = true;
-  // save pointer identifier to match up touch events
-  this.pointerIdentifier = pointer.pointerId !== undefined ?
-    // pointerId for pointer events, touch.indentifier for touch events
-    pointer.pointerId : pointer.identifier;
-
-  this.pointerDown( event, pointer );
-};
-
-Unipointer.prototype.pointerDown = function( event, pointer ) {
-  this._bindPostStartEvents( event );
-  this.emitEvent( 'pointerDown', [ event, pointer ] );
-};
-
-// hash of events to be bound after start event
-var postStartEvents = {
-  mousedown: [ 'mousemove', 'mouseup' ],
-  touchstart: [ 'touchmove', 'touchend', 'touchcancel' ],
-  pointerdown: [ 'pointermove', 'pointerup', 'pointercancel' ],
-  MSPointerDown: [ 'MSPointerMove', 'MSPointerUp', 'MSPointerCancel' ]
-};
-
-Unipointer.prototype._bindPostStartEvents = function( event ) {
-  if ( !event ) {
-    return;
-  }
-  // get proper events to match start event
-  var events = postStartEvents[ event.type ];
-  // IE8 needs to be bound to document
-  var node = event.preventDefault ? window : document;
-  // bind events to node
-  for ( var i=0, len = events.length; i < len; i++ ) {
-    var evnt = events[i];
-    eventie.bind( node, evnt, this );
-  }
-  // save these arguments
-  this._boundPointerEvents = {
-    events: events,
-    node: node
-  };
-};
-
-Unipointer.prototype._unbindPostStartEvents = function() {
-  var args = this._boundPointerEvents;
-  // IE8 can trigger dragEnd twice, check for _boundEvents
-  if ( !args || !args.events ) {
-    return;
-  }
-
-  for ( var i=0, len = args.events.length; i < len; i++ ) {
-    var event = args.events[i];
-    eventie.unbind( args.node, event, this );
-  }
-  delete this._boundPointerEvents;
-};
-
-// ----- move event ----- //
-
-Unipointer.prototype.onmousemove = function( event ) {
-  this._pointerMove( event, event );
-};
-
-Unipointer.prototype.onMSPointerMove =
-Unipointer.prototype.onpointermove = function( event ) {
-  if ( event.pointerId == this.pointerIdentifier ) {
-    this._pointerMove( event, event );
-  }
-};
-
-Unipointer.prototype.ontouchmove = function( event ) {
-  var touch = this.getTouch( event.changedTouches );
-  if ( touch ) {
-    this._pointerMove( event, touch );
-  }
-};
-
-/**
- * pointer move
- * @param {Event} event
- * @param {Event or Touch} pointer
- * @private
- */
-Unipointer.prototype._pointerMove = function( event, pointer ) {
-  this.pointerMove( event, pointer );
-};
-
-// public
-Unipointer.prototype.pointerMove = function( event, pointer ) {
-  this.emitEvent( 'pointerMove', [ event, pointer ] );
-};
-
-// ----- end event ----- //
-
-
-Unipointer.prototype.onmouseup = function( event ) {
-  this._pointerUp( event, event );
-};
-
-Unipointer.prototype.onMSPointerUp =
-Unipointer.prototype.onpointerup = function( event ) {
-  if ( event.pointerId == this.pointerIdentifier ) {
-    this._pointerUp( event, event );
-  }
-};
-
-Unipointer.prototype.ontouchend = function( event ) {
-  var touch = this.getTouch( event.changedTouches );
-  if ( touch ) {
-    this._pointerUp( event, touch );
-  }
-};
-
-/**
- * pointer up
- * @param {Event} event
- * @param {Event or Touch} pointer
- * @private
- */
-Unipointer.prototype._pointerUp = function( event, pointer ) {
-  this._pointerDone();
-  this.pointerUp( event, pointer );
-};
-
-// public
-Unipointer.prototype.pointerUp = function( event, pointer ) {
-  this.emitEvent( 'pointerUp', [ event, pointer ] );
-};
-
-// ----- pointer done ----- //
-
-// triggered on pointer up & pointer cancel
-Unipointer.prototype._pointerDone = function() {
-  // reset properties
-  this.isPointerDown = false;
-  delete this.pointerIdentifier;
-  // remove events
-  this._unbindPostStartEvents();
-  this.pointerDone();
-};
-
-Unipointer.prototype.pointerDone = noop;
-
-// ----- pointer cancel ----- //
-
-Unipointer.prototype.onMSPointerCancel =
-Unipointer.prototype.onpointercancel = function( event ) {
-  if ( event.pointerId == this.pointerIdentifier ) {
-    this._pointerCancel( event, event );
-  }
-};
-
-Unipointer.prototype.ontouchcancel = function( event ) {
-  var touch = this.getTouch( event.changedTouches );
-  if ( touch ) {
-    this._pointerCancel( event, touch );
-  }
-};
-
-/**
- * pointer cancel
- * @param {Event} event
- * @param {Event or Touch} pointer
- * @private
- */
-Unipointer.prototype._pointerCancel = function( event, pointer ) {
-  this._pointerDone();
-  this.pointerCancel( event, pointer );
-};
-
-// public
-Unipointer.prototype.pointerCancel = function( event, pointer ) {
-  this.emitEvent( 'pointerCancel', [ event, pointer ] );
-};
-
-// -----  ----- //
-
-// utility function for getting x/y cooridinates from event, because IE8
-Unipointer.getPointerPoint = function( pointer ) {
-  return {
-    x: pointer.pageX !== undefined ? pointer.pageX : pointer.clientX,
-    y: pointer.pageY !== undefined ? pointer.pageY : pointer.clientY
-  };
-};
-
-// -----  ----- //
-
-return Unipointer;
-
-}));
-
-},{"eventie":6,"wolfy87-eventemitter":26}],26:[function(require,module,exports){
-/*!
- * EventEmitter v4.2.11 - git.io/ee
- * Unlicense - http://unlicense.org/
- * Oliver Caldwell - http://oli.me.uk/
- * @preserve
- */
-
-;(function () {
-    'use strict';
-
-    /**
-     * Class for managing events.
-     * Can be extended to provide event functionality in other classes.
-     *
-     * @class EventEmitter Manages event registering and emitting.
-     */
-    function EventEmitter() {}
-
-    // Shortcuts to improve speed and size
-    var proto = EventEmitter.prototype;
-    var exports = this;
-    var originalGlobalValue = exports.EventEmitter;
-
-    /**
-     * Finds the index of the listener for the event in its storage array.
-     *
-     * @param {Function[]} listeners Array of listeners to search through.
-     * @param {Function} listener Method to look for.
-     * @return {Number} Index of the specified listener, -1 if not found
-     * @api private
-     */
-    function indexOfListener(listeners, listener) {
-        var i = listeners.length;
-        while (i--) {
-            if (listeners[i].listener === listener) {
-                return i;
-            }
-        }
-
-        return -1;
-    }
-
-    /**
-     * Alias a method while keeping the context correct, to allow for overwriting of target method.
-     *
-     * @param {String} name The name of the target method.
-     * @return {Function} The aliased method
-     * @api private
-     */
-    function alias(name) {
-        return function aliasClosure() {
-            return this[name].apply(this, arguments);
-        };
-    }
-
-    /**
-     * Returns the listener array for the specified event.
-     * Will initialise the event object and listener arrays if required.
-     * Will return an object if you use a regex search. The object contains keys for each matched event. So /ba[rz]/ might return an object containing bar and baz. But only if you have either defined them with defineEvent or added some listeners to them.
-     * Each property in the object response is an array of listener functions.
-     *
-     * @param {String|RegExp} evt Name of the event to return the listeners from.
-     * @return {Function[]|Object} All listener functions for the event.
-     */
-    proto.getListeners = function getListeners(evt) {
-        var events = this._getEvents();
-        var response;
-        var key;
-
-        // Return a concatenated array of all matching events if
-        // the selector is a regular expression.
-        if (evt instanceof RegExp) {
-            response = {};
-            for (key in events) {
-                if (events.hasOwnProperty(key) && evt.test(key)) {
-                    response[key] = events[key];
-                }
-            }
-        }
-        else {
-            response = events[evt] || (events[evt] = []);
-        }
-
-        return response;
-    };
-
-    /**
-     * Takes a list of listener objects and flattens it into a list of listener functions.
-     *
-     * @param {Object[]} listeners Raw listener objects.
-     * @return {Function[]} Just the listener functions.
-     */
-    proto.flattenListeners = function flattenListeners(listeners) {
-        var flatListeners = [];
-        var i;
-
-        for (i = 0; i < listeners.length; i += 1) {
-            flatListeners.push(listeners[i].listener);
-        }
-
-        return flatListeners;
-    };
-
-    /**
-     * Fetches the requested listeners via getListeners but will always return the results inside an object. This is mainly for internal use but others may find it useful.
-     *
-     * @param {String|RegExp} evt Name of the event to return the listeners from.
-     * @return {Object} All listener functions for an event in an object.
-     */
-    proto.getListenersAsObject = function getListenersAsObject(evt) {
-        var listeners = this.getListeners(evt);
-        var response;
-
-        if (listeners instanceof Array) {
-            response = {};
-            response[evt] = listeners;
-        }
-
-        return response || listeners;
-    };
-
-    /**
-     * Adds a listener function to the specified event.
-     * The listener will not be added if it is a duplicate.
-     * If the listener returns true then it will be removed after it is called.
-     * If you pass a regular expression as the event name then the listener will be added to all events that match it.
-     *
-     * @param {String|RegExp} evt Name of the event to attach the listener to.
-     * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
-     * @return {Object} Current instance of EventEmitter for chaining.
-     */
-    proto.addListener = function addListener(evt, listener) {
-        var listeners = this.getListenersAsObject(evt);
-        var listenerIsWrapped = typeof listener === 'object';
-        var key;
-
-        for (key in listeners) {
-            if (listeners.hasOwnProperty(key) && indexOfListener(listeners[key], listener) === -1) {
-                listeners[key].push(listenerIsWrapped ? listener : {
-                    listener: listener,
-                    once: false
-                });
-            }
-        }
-
-        return this;
-    };
-
-    /**
-     * Alias of addListener
-     */
-    proto.on = alias('addListener');
-
-    /**
-     * Semi-alias of addListener. It will add a listener that will be
-     * automatically removed after its first execution.
-     *
-     * @param {String|RegExp} evt Name of the event to attach the listener to.
-     * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
-     * @return {Object} Current instance of EventEmitter for chaining.
-     */
-    proto.addOnceListener = function addOnceListener(evt, listener) {
-        return this.addListener(evt, {
-            listener: listener,
-            once: true
-        });
-    };
-
-    /**
-     * Alias of addOnceListener.
-     */
-    proto.once = alias('addOnceListener');
-
-    /**
-     * Defines an event name. This is required if you want to use a regex to add a listener to multiple events at once. If you don't do this then how do you expect it to know what event to add to? Should it just add to every possible match for a regex? No. That is scary and bad.
-     * You need to tell it what event names should be matched by a regex.
-     *
-     * @param {String} evt Name of the event to create.
-     * @return {Object} Current instance of EventEmitter for chaining.
-     */
-    proto.defineEvent = function defineEvent(evt) {
-        this.getListeners(evt);
-        return this;
-    };
-
-    /**
-     * Uses defineEvent to define multiple events.
-     *
-     * @param {String[]} evts An array of event names to define.
-     * @return {Object} Current instance of EventEmitter for chaining.
-     */
-    proto.defineEvents = function defineEvents(evts) {
-        for (var i = 0; i < evts.length; i += 1) {
-            this.defineEvent(evts[i]);
-        }
-        return this;
-    };
-
-    /**
-     * Removes a listener function from the specified event.
-     * When passed a regular expression as the event name, it will remove the listener from all events that match it.
-     *
-     * @param {String|RegExp} evt Name of the event to remove the listener from.
-     * @param {Function} listener Method to remove from the event.
-     * @return {Object} Current instance of EventEmitter for chaining.
-     */
-    proto.removeListener = function removeListener(evt, listener) {
-        var listeners = this.getListenersAsObject(evt);
-        var index;
-        var key;
-
-        for (key in listeners) {
-            if (listeners.hasOwnProperty(key)) {
-                index = indexOfListener(listeners[key], listener);
-
-                if (index !== -1) {
-                    listeners[key].splice(index, 1);
-                }
-            }
-        }
-
-        return this;
-    };
-
-    /**
-     * Alias of removeListener
-     */
-    proto.off = alias('removeListener');
-
-    /**
-     * Adds listeners in bulk using the manipulateListeners method.
-     * If you pass an object as the second argument you can add to multiple events at once. The object should contain key value pairs of events and listeners or listener arrays. You can also pass it an event name and an array of listeners to be added.
-     * You can also pass it a regular expression to add the array of listeners to all events that match it.
-     * Yeah, this function does quite a bit. That's probably a bad thing.
-     *
-     * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add to multiple events at once.
-     * @param {Function[]} [listeners] An optional array of listener functions to add.
-     * @return {Object} Current instance of EventEmitter for chaining.
-     */
-    proto.addListeners = function addListeners(evt, listeners) {
-        // Pass through to manipulateListeners
-        return this.manipulateListeners(false, evt, listeners);
-    };
-
-    /**
-     * Removes listeners in bulk using the manipulateListeners method.
-     * If you pass an object as the second argument you can remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
-     * You can also pass it an event name and an array of listeners to be removed.
-     * You can also pass it a regular expression to remove the listeners from all events that match it.
-     *
-     * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to remove from multiple events at once.
-     * @param {Function[]} [listeners] An optional array of listener functions to remove.
-     * @return {Object} Current instance of EventEmitter for chaining.
-     */
-    proto.removeListeners = function removeListeners(evt, listeners) {
-        // Pass through to manipulateListeners
-        return this.manipulateListeners(true, evt, listeners);
-    };
-
-    /**
-     * Edits listeners in bulk. The addListeners and removeListeners methods both use this to do their job. You should really use those instead, this is a little lower level.
-     * The first argument will determine if the listeners are removed (true) or added (false).
-     * If you pass an object as the second argument you can add/remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
-     * You can also pass it an event name and an array of listeners to be added/removed.
-     * You can also pass it a regular expression to manipulate the listeners of all events that match it.
-     *
-     * @param {Boolean} remove True if you want to remove listeners, false if you want to add.
-     * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add/remove from multiple events at once.
-     * @param {Function[]} [listeners] An optional array of listener functions to add/remove.
-     * @return {Object} Current instance of EventEmitter for chaining.
-     */
-    proto.manipulateListeners = function manipulateListeners(remove, evt, listeners) {
-        var i;
-        var value;
-        var single = remove ? this.removeListener : this.addListener;
-        var multiple = remove ? this.removeListeners : this.addListeners;
-
-        // If evt is an object then pass each of its properties to this method
-        if (typeof evt === 'object' && !(evt instanceof RegExp)) {
-            for (i in evt) {
-                if (evt.hasOwnProperty(i) && (value = evt[i])) {
-                    // Pass the single listener straight through to the singular method
-                    if (typeof value === 'function') {
-                        single.call(this, i, value);
-                    }
-                    else {
-                        // Otherwise pass back to the multiple function
-                        multiple.call(this, i, value);
-                    }
-                }
-            }
-        }
-        else {
-            // So evt must be a string
-            // And listeners must be an array of listeners
-            // Loop over it and pass each one to the multiple method
-            i = listeners.length;
-            while (i--) {
-                single.call(this, evt, listeners[i]);
-            }
-        }
-
-        return this;
-    };
-
-    /**
-     * Removes all listeners from a specified event.
-     * If you do not specify an event then all listeners will be removed.
-     * That means every event will be emptied.
-     * You can also pass a regex to remove all events that match it.
-     *
-     * @param {String|RegExp} [evt] Optional name of the event to remove all listeners for. Will remove from every event if not passed.
-     * @return {Object} Current instance of EventEmitter for chaining.
-     */
-    proto.removeEvent = function removeEvent(evt) {
-        var type = typeof evt;
-        var events = this._getEvents();
-        var key;
-
-        // Remove different things depending on the state of evt
-        if (type === 'string') {
-            // Remove all listeners for the specified event
-            delete events[evt];
-        }
-        else if (evt instanceof RegExp) {
-            // Remove all events matching the regex.
-            for (key in events) {
-                if (events.hasOwnProperty(key) && evt.test(key)) {
-                    delete events[key];
-                }
-            }
-        }
-        else {
-            // Remove all listeners in all events
-            delete this._events;
-        }
-
-        return this;
-    };
-
-    /**
-     * Alias of removeEvent.
-     *
-     * Added to mirror the node API.
-     */
-    proto.removeAllListeners = alias('removeEvent');
-
-    /**
-     * Emits an event of your choice.
-     * When emitted, every listener attached to that event will be executed.
-     * If you pass the optional argument array then those arguments will be passed to every listener upon execution.
-     * Because it uses `apply`, your array of arguments will be passed as if you wrote them out separately.
-     * So they will not arrive within the array on the other side, they will be separate.
-     * You can also pass a regular expression to emit to all events that match it.
-     *
-     * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
-     * @param {Array} [args] Optional array of arguments to be passed to each listener.
-     * @return {Object} Current instance of EventEmitter for chaining.
-     */
-    proto.emitEvent = function emitEvent(evt, args) {
-        var listeners = this.getListenersAsObject(evt);
-        var listener;
-        var i;
-        var key;
-        var response;
-
-        for (key in listeners) {
-            if (listeners.hasOwnProperty(key)) {
-                i = listeners[key].length;
-
-                while (i--) {
-                    // If the listener returns true then it shall be removed from the event
-                    // The function is executed either with a basic call or an apply if there is an args array
-                    listener = listeners[key][i];
-
-                    if (listener.once === true) {
-                        this.removeListener(evt, listener.listener);
-                    }
-
-                    response = listener.listener.apply(this, args || []);
-
-                    if (response === this._getOnceReturnValue()) {
-                        this.removeListener(evt, listener.listener);
-                    }
-                }
-            }
-        }
-
-        return this;
-    };
-
-    /**
-     * Alias of emitEvent
-     */
-    proto.trigger = alias('emitEvent');
-
-    /**
-     * Subtly different from emitEvent in that it will pass its arguments on to the listeners, as opposed to taking a single array of arguments to pass on.
-     * As with emitEvent, you can pass a regex in place of the event name to emit to all events that match it.
-     *
-     * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
-     * @param {...*} Optional additional arguments to be passed to each listener.
-     * @return {Object} Current instance of EventEmitter for chaining.
-     */
-    proto.emit = function emit(evt) {
-        var args = Array.prototype.slice.call(arguments, 1);
-        return this.emitEvent(evt, args);
-    };
-
-    /**
-     * Sets the current value to check against when executing listeners. If a
-     * listeners return value matches the one set here then it will be removed
-     * after execution. This value defaults to true.
-     *
-     * @param {*} value The new value to check for when executing listeners.
-     * @return {Object} Current instance of EventEmitter for chaining.
-     */
-    proto.setOnceReturnValue = function setOnceReturnValue(value) {
-        this._onceReturnValue = value;
-        return this;
-    };
-
-    /**
-     * Fetches the current value to check against when executing listeners. If
-     * the listeners return value matches this one then it should be removed
-     * automatically. It will return true by default.
-     *
-     * @return {*|Boolean} The current value to check for or the default, true.
-     * @api private
-     */
-    proto._getOnceReturnValue = function _getOnceReturnValue() {
-        if (this.hasOwnProperty('_onceReturnValue')) {
-            return this._onceReturnValue;
-        }
-        else {
-            return true;
-        }
-    };
-
-    /**
-     * Fetches the events object and creates one if required.
-     *
-     * @return {Object} The events storage object.
-     * @api private
-     */
-    proto._getEvents = function _getEvents() {
-        return this._events || (this._events = {});
-    };
-
-    /**
-     * Reverts the global {@link EventEmitter} to its previous value and returns a reference to this version.
-     *
-     * @return {Function} Non conflicting EventEmitter class.
-     */
-    EventEmitter.noConflict = function noConflict() {
-        exports.EventEmitter = originalGlobalValue;
-        return EventEmitter;
-    };
-
-    // Expose the class either via AMD, CommonJS or the global object
-    if (typeof define === 'function' && define.amd) {
-        define(function () {
-            return EventEmitter;
-        });
-    }
-    else if (typeof module === 'object' && module.exports){
-        module.exports = EventEmitter;
-    }
-    else {
-        exports.EventEmitter = EventEmitter;
-    }
-}.call(this));
 
 },{}]},{},[1]);

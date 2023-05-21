@@ -15,6 +15,9 @@
   "bugs": {
     "url": "https://github.com/ariroseonline/new-portfolio/issues"
   },
+  "engines": {
+    "node": "4.0.0"
+  },
   "homepage": "https://github.com/ariroseonline/new-portfolio#readme",
   "devDependencies": {
     "browserify": "^12.0.1",
